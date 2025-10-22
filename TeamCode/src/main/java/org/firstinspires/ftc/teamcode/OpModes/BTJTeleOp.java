@@ -22,7 +22,7 @@ public class BTJTeleOp extends OpMode {
     Drive drive;
     Intake intake;
     Thread waitForLongXPress;
-    Shooter shooter;
+   // Shooter shooter;
 
     @Override
     public void init() {
@@ -42,7 +42,7 @@ public class BTJTeleOp extends OpMode {
             }
         });
 
-        shooter = new Shooter(hardwareMap);
+       // shooter = new Shooter(hardwareMap);
     }
 
     @Override
@@ -68,24 +68,24 @@ public class BTJTeleOp extends OpMode {
             waitForLongXPress.start();
         }
 
-        if(gamepad1.dpadDownWasPressed()){
-            shooter.setMotorSpeed(0.75);
-        } else if (gamepad1.dpadUpWasPressed()) {
-            shooter.setMotorSpeed(0.85);
-        }
-
-        if(gamepad1.dpadRightWasPressed()){
-            shooter.setMotorSpeed(shooter.getMotorSpeed()+SHOOTER_DIFFERENTIAL_SPEED);
-        } else if (gamepad1.dpadLeftWasPressed()) {
-            shooter.setMotorSpeed(shooter.getMotorSpeed()-SHOOTER_DIFFERENTIAL_SPEED
-            );
-        }
-        if (gamepad1.rightStickButtonWasPressed()){
-            shooter.setMotorSpeed(0);
-        }
-
-        telemetry.addData("Shooter speed", shooter.getMotorSpeed());
-        telemetry.update();
+//        if(gamepad1.dpadDownWasPressed()){
+//            shooter.setMotorSpeed(0.75);
+//        } else if (gamepad1.dpadUpWasPressed()) {
+//            shooter.setMotorSpeed(0.85);
+//        }
+//
+//        if(gamepad1.dpadRightWasPressed()){
+//            shooter.setMotorSpeed(shooter.getMotorSpeed()+SHOOTER_DIFFERENTIAL_SPEED);
+//        } else if (gamepad1.dpadLeftWasPressed()) {
+//            shooter.setMotorSpeed(shooter.getMotorSpeed()-SHOOTER_DIFFERENTIAL_SPEED
+//            );
+//        }
+//        if (gamepad1.rightStickButtonWasPressed()){
+//            shooter.setMotorSpeed(0);
+//        }
+//
+//        telemetry.addData("Shooter speed", shooter.getMotorSpeed());
+//        telemetry.update();
 
     }
 }
