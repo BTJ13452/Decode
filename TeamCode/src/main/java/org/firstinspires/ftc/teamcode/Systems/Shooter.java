@@ -11,7 +11,7 @@ public class Shooter {
 
     public Shooter(HardwareMap hardwareMap){
         ShoterMotor = hardwareMap.dcMotor.get ("ShoterMotor");
-        ShoterMotor = hardwareMap.dcMotor.get ("ShoterMotor2");
+        ShoterMotor2 = hardwareMap.dcMotor.get ("ShoterMotor2");
         ShoterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         ShoterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
     }
