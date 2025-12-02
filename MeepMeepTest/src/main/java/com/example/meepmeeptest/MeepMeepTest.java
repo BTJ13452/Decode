@@ -15,27 +15,33 @@ import javax.imageio.ImageIO;
 
 public class MeepMeepTest {
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(600);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(50, 50, Math.toRadians(180), Math.toRadians(180), 18)
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 18)
                 .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(59, 15, Math.toRadians(160)))
-                        .waitSeconds(3)
+                        .waitSeconds(1)
                         .splineToLinearHeading(new Pose2d(36, 45,Math.toRadians(90)), Math.toRadians(90))
                         .setTangent(Math.toRadians(-90))
                         .splineToLinearHeading(new Pose2d(59, 15,Math.toRadians(160)), Math.toRadians(-20))
-                        .waitSeconds(3)
+                        //נסיעה ראשונה
+
+                        .waitSeconds(1)
                         .setTangent(Math.toRadians(160))
                         .splineToLinearHeading(new Pose2d(12, 45,Math.toRadians(90)), Math.toRadians(90))
                         .setTangent(Math.toRadians(-90))
                         .splineToLinearHeading(new Pose2d(59, 15,Math.toRadians(160)), Math.toRadians(-20))
-                        .waitSeconds(3)
+                        //נסיעה שנייה
+
+                        .waitSeconds(1)
                         .setTangent(Math.toRadians(90))
-                        .splineToLinearHeading(new Pose2d(60, 65,Math.toRadians(0)), Math.toRadians(0))
+                        .splineToLinearHeading(new Pose2d(62, 60,Math.toRadians(90)), Math.toRadians(75))
                         .setTangent(Math.toRadians(-90))
                         .splineToLinearHeading(new Pose2d(59, 15,Math.toRadians(160)), Math.toRadians(-20))
-                        .waitSeconds(3)
+                        //נסיעה שלישית
+
+                        .waitSeconds(1)
                         .forward(15)
                         .build());
 
@@ -51,3 +57,4 @@ public class MeepMeepTest {
                 .start();
     }
 }
+//יכול להיות בעיות עם הנסיעה ה3

@@ -17,7 +17,7 @@ public class TestParking extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.bWasPressed()){
+        if (gamepad1.yWasPressed()){
             parking.raiseRobot();
         }
     }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 
 @TeleOp
-@Disabled
+
 public class TestShooter extends OpMode{
 
     final double SHOOTER_DIFFERENTIAL_SPEED = 0.05;
@@ -25,15 +25,13 @@ public class TestShooter extends OpMode{
     @Override
     public void loop() {
 
-        if(gamepad1.dpadDownWasPressed()){
-            shooter.setMotorSpeed(0.75);
-        } else if (gamepad1.dpadUpWasPressed()) {
-            shooter.setMotorSpeed(0.85);
+        if(gamepad1.bWasPressed()){
+            shooter.setMotorSpeed(0.8);
         }
 
-        if(gamepad1.dpadRightWasPressed()){
+        if(gamepad1.dpadUpWasPressed()){
             shooter.setMotorSpeed(shooter.getMotorSpeed()+SHOOTER_DIFFERENTIAL_SPEED);
-        } else if (gamepad1.dpadLeftWasPressed()) {
+        } else if (gamepad1.dpadDownWasPressed()) {
             shooter.setMotorSpeed(shooter.getMotorSpeed()-SHOOTER_DIFFERENTIAL_SPEED
             );
         }

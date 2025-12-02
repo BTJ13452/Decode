@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Systems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PWMOutput;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Parking {
@@ -10,11 +11,12 @@ public class Parking {
     final double RADIOS = 0.0191; //CM
     final double TICK_PER_CM = ENCODER_RESOLUTION / (2 * Math.PI * RADIOS);
     final double HEIGHT = 45.72; //CM
-    final double MOTOR_POWER = 0.5;
-    final int ACCEPTABLE_HEIGHT_DISTANCE = 2; //CM
+    final double MOTOR_POWER = 0.4;
 
+    final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
+
+    
     Thread fixElevatorsDistance;
-
     DcMotor rightElevator;
     DcMotor leftElevator;
     TouchSensor rightMagneticSensor;
@@ -25,7 +27,7 @@ public class Parking {
         leftElevator = hardwareMap.dcMotor.get("Left Elevator");
 
         rightElevator.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftElevator.setDirection(DcMotorSimple.Direction.REVERSE);
+          leftElevator.setDirection(DcMotorSimple.Direction.REVERSE);
 
         rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -38,8 +40,7 @@ public class Parking {
         fixElevatorsDistance = new Thread(new Runnable() {
             @Override
             public void run() {
-                while ((rightElevator.getTargetPosition() - rightElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE ||
-                        (leftElevator.getTargetPosition() - rightElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE) {
+                while ((rightElevator.getTargetPosition() - rightElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE || (leftElevator.getTargetPosition() - rightElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE) {
                     if ((rightElevator.getCurrentPosition() - leftElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE) {
                         rightElevator.setPower(0);
                     } else if ((leftElevator.getCurrentPosition() - rightElevator.getCurrentPosition()) / TICK_PER_CM > ACCEPTABLE_HEIGHT_DISTANCE) {

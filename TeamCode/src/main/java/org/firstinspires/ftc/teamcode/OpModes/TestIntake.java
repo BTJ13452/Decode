@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 
 @TeleOp
-@Disabled
+
 public class TestIntake extends OpMode {
 
     final int LONG_PRESS_MILLISECONDS = 500;
@@ -17,6 +16,9 @@ public class TestIntake extends OpMode {
     Intake intake;
 
     Thread waitForLongXPress;
+
+    Intake rigthActivateMidIntake;
+    Intake leftActivateMidIntake;
 
     @Override
     public void init() {
@@ -27,25 +29,62 @@ public class TestIntake extends OpMode {
             public void run() {
                 gamepad1.xWasReleased();
                 sleep(LONG_PRESS_MILLISECONDS);
-                if(!gamepad1.xWasReleased()){
+                if (!gamepad1.xWasReleased()) {
                     intake.activateEjection();
-                    while (gamepad1.x){}
-                    intake.deactivateIntake();
+                    while (gamepad1.x) {
+                    }
+                    intake.deactivateAllIntake();
                 }
             }
         });
     }
-
-    @Override
+;
+      @Override
     public void loop() {
-        if (gamepad1.xWasPressed()){
-            if(intake.isActive()){
+        if (gamepad1.xWasPressed()) {
+            if (intake.isActive()) {
                 intake.deactivateIntake();
-            }else{
+            } else {
                 intake.activateIntake();
             }
+
+
             waitForLongXPress.interrupt();
             waitForLongXPress.start();
+
         }
+
+
+            if (gamepad1.rightBumperWasPressed()) {
+            if (intake.isMidRightActive()) {
+                intake.deMidRightActivateIntake();
+                intake.deactivateWheel();
+
+
+            }
+            else {
+                intake.rightActivateMidIntake();
+                intake.ActivateWheel();
+
+            }
+
+        }
+
+
+        if (gamepad1.leftBumperWasPressed()){
+            if (intake.isMidLeftActive()) {
+                intake.deMidLeftActivateIntake();
+                intake.deactivateWheel();
+
+            }
+            else {
+                intake.leftActivateMidIntake();
+                intake.ActivateWheel();
+
+
+            }
+
+        }
+
     }
 }

@@ -5,24 +5,27 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Shooter {
-    DcMotor ShoterMotor;
-    DcMotor ShoterMotor2;
+    DcMotor ShooterMotorR;
+    DcMotor ShooterMotorL;
 
 
     public Shooter(HardwareMap hardwareMap){
-        ShoterMotor = hardwareMap.dcMotor.get ("ShoterMotor");
-        ShoterMotor2 = hardwareMap.dcMotor.get ("ShoterMotor2");
-        ShoterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        ShoterMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+        ShooterMotorR = hardwareMap.dcMotor.get ("ShooterMotorR");
+        ShooterMotorL = hardwareMap.dcMotor.get ("ShooterMotorL");
+        ShooterMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+        ShooterMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
     }
     public void setMotorSpeed(double speed){
         speed = Math.max(0, Math.min(speed, 1));
-        ShoterMotor.setPower(speed);
-        ShoterMotor2.setPower(speed);
+        ShooterMotorR.setPower(speed);
+        ShooterMotorL.setPower(speed);
     }
     public double getMotorSpeed(){
-        return ShoterMotor2.getPower();
+        return ShooterMotorL.getPower();
     }
 
-}
+
+    }
+
+
 
