@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,7 +19,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp
-public class TestAutoShooter extends OpMode{
+@Disabled
+public class TestAutoShooter extends OpMode {
 
     private AprilTagProcessor aprilTag;
 
@@ -64,21 +66,21 @@ public class TestAutoShooter extends OpMode{
     @Override
     public void loop() {
         double adapter = 0;
-        if(voltageSensor.getVoltage() > 13){
+        if (voltageSensor.getVoltage() > 13) {
             adapter = -0.065;
 
         } else if (voltageSensor.getVoltage() > 12.5) {
             adapter = -0.055;
         } else if (voltageSensor.getVoltage() > 12) {
             adapter = -0.04;
-        }else if (voltageSensor.getVoltage() > 11) {
+        } else if (voltageSensor.getVoltage() > 11) {
             adapter = 0.02;
         }
         telemetry.addData("volt", voltageSensor.getVoltage());
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         for (AprilTagDetection detection : currentDetections) {
-            if(detection.id == 24){
+            if (detection.id == 24) {
                 telemetry.addData("distance", detection.ftcPose.y);
                 shooter.setPower(p(detection.ftcPose.y) + adapter);
             }
@@ -93,7 +95,7 @@ public class TestAutoShooter extends OpMode{
     static final double c = 0.7517715960347462;
     static final double d = -77.29541900481152;
 
-    // Evaluate polynomial using Horner's method
+      // Evaluate polynomial using Horner's method
     public static double p(double x) {
         return ((a * x + b) * x + c) * x + d;
     }

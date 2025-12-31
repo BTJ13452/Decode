@@ -10,6 +10,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Drive {
 
+    final double ROTATION_SENSITIVITY = 0.75;
+
     IMU imu;
 
     DcMotor motorFrontLeft;
@@ -39,19 +41,24 @@ public class Drive {
         motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         imu = hardwareMap.get(IMU.class, "imu");
+
+
+
         imu.initialize( new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP)));
         resetIMU();
 
-        isFildoOn = true;
+        isFildoOn = false;
 
         this.heading = (heading / 180) * Math.PI;
     }
 
     public void drive(double x,double y, double r){
+        r *= ROTATION_SENSITIVITY;
 
-        if (isFildoOn){
+
+         if (isFildoOn){
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) + heading;
 
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -74,7 +81,6 @@ public class Drive {
     }
 
     public void resetIMU(){
-        imu.resetYaw();
         imu.resetYaw();
         heading = 0;
     }

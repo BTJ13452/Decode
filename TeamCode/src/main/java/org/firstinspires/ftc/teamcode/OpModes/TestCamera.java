@@ -4,6 +4,7 @@ import static android.os.SystemClock.sleep;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp
+@Disabled
 public class TestCamera extends OpMode {
 
     private AprilTagProcessor aprilTag;
@@ -38,6 +40,7 @@ public class TestCamera extends OpMode {
         new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Chose a name"))
                 .setCameraResolution(new Size(640, 480))
+
                 .addProcessor(aprilTag)
                 .build();
 

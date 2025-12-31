@@ -1,123 +1,106 @@
 package org.firstinspires.ftc.teamcode.Systems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
 
+    public enum Direction {
+        FORWARD,
+        REVERSE,
+        STOP;
+
+        public static int getValue(Direction d){
+            switch (d){
+                case FORWARD:
+                    return 1;
+                case REVERSE:
+                    return -1;
+                default:
+                    return 0;
+            }
+        }
+    }
+
+    public enum Cell{
+        RIGHT,
+        LEFT;
+    }
+
     final double IN_POWER = 1;
 
-    CRServo rightServo;
-    CRServo leftServo;
-
-    CRServo wheel;
-
-    CRServo midRightServo;
-    CRServo midLeftServo;
+    CRServo rightFirstStageIntakeServo;
+    CRServo leftFirstStageIntakeServo;
+    CRServo rightSecondStageTransportServo;
+    CRServo leftSecondStageTransportServo;
+    CRServo rightThirdStageTransportServo;
+    CRServo leftThirdStageTransportServo;
 
     public Intake(HardwareMap hardwareMap) {
-        rightServo = hardwareMap.get(CRServo.class, "rightServo");
-        leftServo = hardwareMap.get(CRServo.class, "leftServo");
+        rightFirstStageIntakeServo = hardwareMap.get(CRServo.class, "rightServo");
+        leftFirstStageIntakeServo = hardwareMap.get(CRServo.class, "leftServo");
 
-        midRightServo = hardwareMap.get(CRServo.class, "midRightServo");
-        midLeftServo = hardwareMap.get(CRServo.class, "midLeftServo");
+        rightSecondStageTransportServo = hardwareMap.get(CRServo.class, "midRightServo");
+        leftSecondStageTransportServo = hardwareMap.get(CRServo.class, "midLeftServo");
 
-        midRightServo.setDirection(CRServo.Direction.REVERSE);
-        midLeftServo.setDirection(CRServo.Direction.FORWARD);
+        leftThirdStageTransportServo = hardwareMap.get(CRServo.class, "wheel");
+        rightThirdStageTransportServo = hardwareMap.get(CRServo.class, "wheel2");
 
-        rightServo.setDirection(CRServo.Direction.REVERSE);
-        leftServo.setDirection(CRServo.Direction.FORWARD);
-  
-        wheel = hardwareMap.get(CRServo.class, "wheel");
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
 
-    }
+        rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
+        leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
 
-    public void activateIntake() {
-        rightServo.setPower(IN_POWER);
-        leftServo.setPower(IN_POWER);
-    }
-    public void rightActivateMidIntake(){
-        midRightServo.setPower(IN_POWER);
-    }
-    public void leftActivateMidIntake() {
-        midLeftServo.setPower(IN_POWER);
-    }
-
-    public void deactivateIntake() {
-        rightServo.setPower(0);
-        leftServo.setPower(0);
-
-    }
-
-    public void deactivateAllIntake() {
-        rightServo.setPower(0);
-        leftServo.setPower(0);
-        midRightServo.setPower(0);
-        midLeftServo.setPower(0);
-        wheel.setPower(0);
-
-    }
-
-    public void activateEjection() {
-        rightServo.setPower(-IN_POWER);
-        leftServo.setPower(-IN_POWER);
-        midRightServo.setPower(-IN_POWER);
-        midLeftServo.setPower(-IN_POWER);
-        wheel.setPower(IN_POWER);
-
-
-
-    }
-    public void ActivateWheel() {
-        wheel.setPower(-IN_POWER);
-    }
-
-    public void deactivateWheel() {
-        wheel.setPower(0);
+        leftThirdStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        rightThirdStageTransportServo.setDirection(CRServo.Direction.REVERSE);
     }
 
 
-    public boolean isActive() {
-        if (rightServo.getPower() == 0)
-            return false;
-        return true;
+    public void firstStageIntake(Direction d) {
+        rightFirstStageIntakeServo.setPower(IN_POWER * Direction.getValue(d));
+        leftFirstStageIntakeServo.setPower(IN_POWER * Direction.getValue(d));
     }
 
-    public boolean isMidRightActive() {
-        if (midRightServo.getPower() == 0)
-            return false;
-        return true;
+    public void rightSecondStageTransport(Direction d) {
+        rightSecondStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
     }
 
-    public boolean isMidLeftActive() {
-        if (midLeftServo.getPower() == 0)
-            return false;
-        return true;
+    public void leftSecondStageTransport(Direction d) {
+        leftSecondStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
     }
 
-    public boolean isMidRightNotActive() {
-        if (midRightServo.getPower() != 0)
-            return false;
-        return true;
+    public void secondStageTransport(Direction d) {
+        rightSecondStageTransport(d);
+        leftSecondStageTransport(d);
     }
 
-    public boolean isMidLeftNotActive() {
-        if (midLeftServo.getPower() != 0)
-            return false;
-        return true;
+    public void thirdStageTransport(Direction d) {
+        leftThirdStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
+        rightThirdStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
     }
 
-
-    public void deMidRightActivateIntake() {
-        midRightServo.setPower(0);
-
+    public void startAll(Direction d) {
+        firstStageIntake(d);
+        secondStageTransport(d);
+        thirdStageTransport(d);
     }
 
-    public void deMidLeftActivateIntake() {
-        midLeftServo.setPower(0);
-
+    public boolean isIntakeActive() {
+        return !(rightFirstStageIntakeServo.getPower() == 0);
     }
+
+    public void transportArtifactToShooter(Cell cell){
+        firstStageIntake(Direction.FORWARD);
+        if(cell == Cell.RIGHT){
+            rightSecondStageTransport(Direction.FORWARD);
+            leftSecondStageTransport(Direction.REVERSE);
+        }
+        else {
+            leftSecondStageTransport(Direction.FORWARD);
+            rightSecondStageTransport(Direction.REVERSE);
+        }
+        thirdStageTransport(Direction.FORWARD);
+    }
+
 }
