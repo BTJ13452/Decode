@@ -5,23 +5,30 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import static android.os.SystemClock.sleep;
+
 public class Parking {
     final double ENCODER_RESOLUTION = 751.8; //PPM
     final double RADIOS = 0.0191; //CM
     final double TICK_PER_CM = ENCODER_RESOLUTION / (2 * Math.PI * RADIOS);
     final double HEIGHT = 45.72; //CM
-    final int HEIGHT_IN_TICKS = (int) Math.round(HEIGHT*TICK_PER_CM);
+    final int HEIGHT_IN_TICKS = (int) Math.round(HEIGHT * TICK_PER_CM);
 
-    final double MOTOR_POWER_FOR_RAISING = 0.2;
-    final double MOTOR_POWER_FOR_LOWERING = -0.2;
+    final double MOTOR_POWER_FOR_RAISING = -1;
+    final double MOTOR_POWER_FOR_LOWERING = 0;
+    final double MOTOR_POWER_FOR_RESET = 0.5;
     final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
+    final int TIME_FOR_RESET = 1000;
+
+    final int RESET_ERROR = 30;
+
 
     boolean isRobotUp;
 
+
     DcMotor rightElevator;
     DcMotor leftElevator;
-    TouchSensor rightMagneticSensor;
-    TouchSensor leftMagneticSensor;
+
 
     Thread fixElevatorsDistance = new Thread(new Runnable() {
         @Override
@@ -45,14 +52,10 @@ public class Parking {
 
         rightElevator = hardwareMap.dcMotor.get("Right Elevator");
         leftElevator = hardwareMap.dcMotor.get("Left Elevator");
-
         rightElevator.setDirection(DcMotorSimple.Direction.FORWARD);
         leftElevator.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        rightMagneticSensor = hardwareMap.touchSensor.get("Right Magnetic Sensor");
-        leftMagneticSensor = hardwareMap.touchSensor.get("Left Magnetic Sensor");
-
-        resetElevator();
+        closeRobot();
     }
 
     public void raiseRobot() {
@@ -81,6 +84,23 @@ public class Parking {
         return (first.getCurrentPosition() - second.getCurrentPosition()) / TICK_PER_CM;
     }
 
+    public void closeRobot() {
+        rightElevator.setPower(-MOTOR_POWER_FOR_RESET);
+        leftElevator.setPower(-MOTOR_POWER_FOR_RESET);
+        sleep(TIME_FOR_RESET);
+        rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightElevator.setPower(0);
+        leftElevator.setPower(0);
+    }
+
+    public void elevatorClosed() {
+        if (rightElevator.getCurrentPosition() >= 50 && leftElevator.getCurrentPosition() >= 50 && isRobotUp) {
+            rightElevator.setTargetPosition(0);
+            leftElevator.setTargetPosition(0);
+        }
+    }
+
 
     public void lowerRobot() {
         if (fixElevatorsDistance.isAlive()) {
@@ -93,33 +113,18 @@ public class Parking {
         leftElevator.setPower(MOTOR_POWER_FOR_LOWERING);
         rightElevator.setPower(MOTOR_POWER_FOR_LOWERING);
 
-        //isRobotUp = false;
+        isRobotUp = false;
     }
 
-    public void resetElevator() {
-        while (!leftMagneticSensor.isPressed() || !rightMagneticSensor.isPressed()) {
-            if (!leftMagneticSensor.isPressed())
-                leftElevator.setPower(MOTOR_POWER_FOR_LOWERING);
-            if (!rightMagneticSensor.isPressed())
-                rightElevator.setPower(MOTOR_POWER_FOR_LOWERING);
-        }
-
-        rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        rightElevator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftElevator.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void stayClosed() {
+        stayClosed(rightElevator);
+        stayClosed(leftElevator);
     }
 
-    public void stayClosed(){
-        stayClosed(rightElevator,rightMagneticSensor);
-        stayClosed(leftElevator,leftMagneticSensor);
-    }
-
-    private void stayClosed(DcMotor elevator, TouchSensor magnet){
-        if(!magnet.isPressed()){
-            elevator.setPower(MOTOR_POWER_FOR_LOWERING);
-        }else {
+    private void stayClosed(DcMotor elevator) {
+        if (elevator.getCurrentPosition() > RESET_ERROR) {
+            elevator.setPower(MOTOR_POWER_FOR_RESET);
+        } else {
             elevator.setPower(0);
         }
     }
@@ -128,16 +133,21 @@ public class Parking {
         return isRobotUp;
     }
 
-    public double getPower(){
+    public double getPower() {
         return rightElevator.getPower();
     }
 
-    public void stop(){
-        if(fixElevatorsDistance.isAlive()){
+    public void stop() {
+        if (fixElevatorsDistance.isAlive()) {
             fixElevatorsDistance.interrupt();
         }
     }
 }
+
+
+
+
+
 
 
 

@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorLimelight3A;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Parking;
@@ -22,9 +24,10 @@ public class BTJTeleOp extends OpMode {
     VoltageSensor voltageSensor;
     Drive drive;
     Intake intake;
-//    Parking parking;
     Shooter shooter;
+    Parking parking;
     RGBController LEDs;
+    SensorLimelight3A sensorLimelight3A;
 
 
     Thread waitForLongXPress = new Thread(new Runnable() {
@@ -47,7 +50,7 @@ public class BTJTeleOp extends OpMode {
         drive = new Drive(hardwareMap, 0);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
-//        parking = new Parking(hardwareMap);
+        parking = new Parking(hardwareMap);
         LEDs = new RGBController(hardwareMap);
         LEDs.setGreen();
     }
@@ -63,6 +66,7 @@ public class BTJTeleOp extends OpMode {
                 drive.activateFildo();
             }
         }
+            parking.elevatorClosed();
 
         if (gamepad1.dpadUpWasPressed()) {
             shooter.autoSpeed(Shooter.Distance.FAR, voltageSensor.getVoltage());
@@ -134,13 +138,15 @@ public class BTJTeleOp extends OpMode {
             intake.thirdStageTransport(Intake.Direction.STOP);
         }
 
-//        if (gamepad1.yWasPressed()) {
-//            if (parking.isRobotRaised()) {
-//                parking.lowerRobot();
-//            } else {
-//                parking.raiseRobot();
-//            }
-//        }
+        if (gamepad1.yWasPressed()) {
+            if (parking.isRobotRaised()) {
+                parking.lowerRobot();
+            } else {
+                parking.raiseRobot();
+            }
+        }
+
+        parking.stayClosed();
 
         printTelemetry();
     }
@@ -150,15 +156,16 @@ public class BTJTeleOp extends OpMode {
         if (waitForLongXPress.isAlive()) {
             waitForLongXPress.interrupt();
         }
-//        parking.stop();
+        parking.stop();
     }
 
     public void printTelemetry() {
         telemetry.addData("Shooter speed", shooter.getPower());
         telemetry.addData("Power offset",shooter.powerOffset);
 
-//
+
         telemetry.update();
+
     }
 }
 

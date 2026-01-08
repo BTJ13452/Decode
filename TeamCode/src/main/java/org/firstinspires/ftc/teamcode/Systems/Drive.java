@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Drive {
 
-    final double ROTATION_SENSITIVITY = 0.75;
+    final double ROTATION_SENSITIVITY = 0.7;
 
     IMU imu;
 

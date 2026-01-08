@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 
 @TeleOp
-@Disabled
+
 public class TestDrive extends OpMode {
 
     Drive drive;

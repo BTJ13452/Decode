@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 @TeleOp
 @Disabled
 public class SensorHuskyLens extends LinearOpMode {
+
     DcMotor ShooterMotorR;
     DcMotor ShooterMotorL;
     Intake intake;
@@ -70,7 +71,7 @@ public class SensorHuskyLens extends LinearOpMode {
                 telemetry.addData("y", blocks[i].id);
 
 //                telemetry.addData("y ", blocks[i].y);
-//                telemetry.addData("x ", blocks[i].x);
+//                   telemetry.addData("x ", blocks[i].x);
                 telemetry.addData("height", blocks[i].height);
                 telemetry.addData("width", blocks[i].width);
 //                telemetry.addData("left", blocks[i].left);
@@ -83,6 +84,8 @@ public class SensorHuskyLens extends LinearOpMode {
                     intake.thirdStageTransport(Intake.Direction.STOP);
                     ShooterMotorR.setPower(0.7);
                     ShooterMotorL.setPower(0.7);
+
+
                 }else{
                     intake.leftSecondStageTransport(Intake.Direction.STOP);
                     intake.thirdStageTransport(Intake.Direction.STOP);

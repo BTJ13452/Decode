@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,12 +12,13 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 
 @TeleOp
-@Disabled
 public class TestShooter extends OpMode {
 
 
     Shooter shooter;
     Intake intake;
+    Limelight3A limelight;
+
 
     double power;
 
@@ -24,6 +28,15 @@ public class TestShooter extends OpMode {
         power = 0;
         intake = new Intake(hardwareMap);
         intake.startAll(Intake.Direction.FORWARD);
+
+
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
+
+        limelight.pipelineSwitch(0);
+
+
+        limelight.start();
 
     }
 
@@ -48,7 +61,24 @@ public class TestShooter extends OpMode {
 
 
         shooter.setPower(power);
-        telemetry.addData("Shooter speed", shooter.getPower());
-        telemetry.update();
+        LLResult llResult = limelight.getLatestResult();
+        if (llResult != null && llResult.isValid()) {
+            power = powerByDistance(llResult.getTa());
+            telemetry.addData("Shooter speed", shooter.getPower());
+            telemetry.addData("TA ", llResult.getTa());
+            telemetry.update();
+            telemetry.update();
+        }
     }
+
+    public double powerByDistance(double ta){
+        return shooter.pNewton(ta);
+    }
+
+
+    @Override
+    public void stop() {
+        limelight.stop();
+    }
+
 }

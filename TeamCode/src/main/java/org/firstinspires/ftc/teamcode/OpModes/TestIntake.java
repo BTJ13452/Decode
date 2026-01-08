@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 
 @TeleOp
-@Disabled
+
 public class TestIntake extends OpMode {
 
     final int LONG_PRESS_MILLISECONDS = 500;

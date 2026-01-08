@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Parking;
 
 @TeleOp
-//@Disabled
-public class TestParking extends OpMode {
+
+public class  TestParking extends OpMode {
 
     Parking parking;
     int num = 1;
@@ -16,6 +16,7 @@ public class TestParking extends OpMode {
     @Override
     public void init() {
         parking = new Parking(hardwareMap);
+        parking.lowerRobot();
     }
 
     @Override
@@ -28,6 +29,9 @@ public class TestParking extends OpMode {
             parking.lowerRobot();
             num = 1;
 
+
+
         }
+
     }
 }
