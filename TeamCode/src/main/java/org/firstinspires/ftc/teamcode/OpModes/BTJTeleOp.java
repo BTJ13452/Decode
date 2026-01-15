@@ -19,8 +19,6 @@ import org.firstinspires.ftc.teamcode.Systems.RGBController;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 
-
-
 @TeleOp
 public class BTJTeleOp extends OpMode {
 
@@ -30,6 +28,7 @@ public class BTJTeleOp extends OpMode {
     final int LONG_PRESS_MILLISECONDS = 500;
     double power;
 
+
     VoltageSensor voltageSensor;
     Drive drive;
     Intake intake;
@@ -38,6 +37,7 @@ public class BTJTeleOp extends OpMode {
     RGBController LEDs;
     Limelight3A limelight;
     SensorLimelight3A sensorLimelight3A;
+    LLResult llResult;
 
 
     Thread waitForLongXPress = new Thread(new Runnable() {
@@ -64,7 +64,10 @@ public class BTJTeleOp extends OpMode {
         LEDs = new RGBController(hardwareMap);
         LEDs.setGreen();
         power = 0;
-        limelight = hardwareMap.get(Limelight3A.class,"limelight");
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.pipelineSwitch(0);
+        limelight.start();
+
     }
 
     @Override
@@ -100,29 +103,11 @@ public class BTJTeleOp extends OpMode {
             shooter.setPower(0);
         }
 
-//        if (gamepad2.dpadUpWasPressed()) {
-//            shooter.powerOffset += 0.1;
-//        }
-//
-//        if (gamepad2.dpadRightWasPressed()) {
-//            shooter.powerOffset += 0.01;
-//        }
-//
-//        if (gamepad2.dpadDownWasPressed()) {
-//            shooter.powerOffset -= 0.1;
-//        }
-//
-//        if (gamepad2.dpadLeftWasPressed()) {
-//            shooter.powerOffset -= 0.01;
-//        }
-
-
         if (gamepad1.rightStickButtonWasPressed()) {
             shooter.setPower(0);
             intake.secondStageTransport(Intake.Direction.REVERSE);
             intake.thirdStageTransport(Intake.Direction.STOP);
         }
-
 
         if (gamepad1.xWasPressed()) {
             if (intake.isIntakeActive()) {
@@ -157,38 +142,32 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.yWasPressed()) {
             parking.raiseRobot();
             num = 0;
+
         }
         if (num == 0 && gamepad1.yWasPressed()) {
             parking.lowerRobot();
             num = 1;
         }
-            {
-                 {
-            }
-        }
-        if(gamepad1.bWasPressed()) {
+
+        if (gamepad1.bWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(500);
+            sleep(600);
             intake.transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(500 );
+            sleep(600);
             intake.startAll(Intake.Direction.FORWARD);
         }
-        LLResult llResult = limelight.getLatestResult();
-
-        shooter.setPower(power);
-        power = powerByDistance(llResult.getTa());
 
 
-        if(gamepad1.aWasPressed()){
-                power = powerByDistance(llResult.getTa());
+        if (shooter.isActive()) {
+            updateShooter();
+        }
 
-            if (shooter.getPower() == 0){
-                shooter.setPower(power);
-            }
-            else {
+        if (gamepad1.aWasPressed()) {
+            if (shooter.isActive()) {
                 shooter.setPower(0);
+            } else {
+                updateShooter();
             }
-
         }
 
         parking.stayClosed();
@@ -202,24 +181,26 @@ public class BTJTeleOp extends OpMode {
             waitForLongXPress.interrupt();
         }
         parking.stop();
+        limelight.stop();
     }
 
     public void printTelemetry() {
-        LLResult llResult = limelight.getLatestResult();
-        telemetry.addData("is valid",llResult.isValid());
-
-
-        if (llResult != null && llResult.isValid()) {
-            telemetry.addData("Shooter speed", shooter.getPower());
-            telemetry.addData("is valid",llResult.isValid());
-            telemetry.addData("TA ", llResult.getTa());
-            telemetry.update();
-        }
-
-
+        telemetry.addData("power", shooter.getPower());
+        telemetry.update();
     }
-    public double powerByDistance(double ta){
-        return shooter.p(ta, voltageSensor.getVoltage());
+
+    public void updateShooter() {
+        llResult = limelight.getLatestResult();
+        for (int i = 0; i < 100; i++){
+            if (llResult != null && llResult.isValid()) {
+                shooter.setPowerByDistance(llResult.getTa(), voltageSensor.getVoltage());
+                telemetry.addData("shooter power", shooter.getPower());
+                telemetry.addData("ta", llResult.getTa());
+                telemetry.addData("voltage", voltageSensor.getVoltage());
+                telemetry.update();
+                break;
+            }
+        }
     }
 }
 
