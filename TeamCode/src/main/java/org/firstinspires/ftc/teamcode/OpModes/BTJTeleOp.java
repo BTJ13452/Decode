@@ -2,9 +2,13 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
 
+import com.acmerobotics.dashboard.message.redux.ReceiveGamepadState;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorLimelight3A;
@@ -16,10 +20,15 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 
 
+
 @TeleOp
 public class BTJTeleOp extends OpMode {
 
+    int num = 1;
+
+    int nub = 1;
     final int LONG_PRESS_MILLISECONDS = 500;
+    double power;
 
     VoltageSensor voltageSensor;
     Drive drive;
@@ -27,6 +36,7 @@ public class BTJTeleOp extends OpMode {
     Shooter shooter;
     Parking parking;
     RGBController LEDs;
+    Limelight3A limelight;
     SensorLimelight3A sensorLimelight3A;
 
 
@@ -53,6 +63,8 @@ public class BTJTeleOp extends OpMode {
         parking = new Parking(hardwareMap);
         LEDs = new RGBController(hardwareMap);
         LEDs.setGreen();
+        power = 0;
+        limelight = hardwareMap.get(Limelight3A.class,"limelight");
     }
 
     @Override
@@ -64,9 +76,13 @@ public class BTJTeleOp extends OpMode {
             } else {
                 drive.resetIMU();
                 drive.activateFildo();
+
             }
+
+
         }
-            parking.elevatorClosed();
+
+        parking.elevatorClosed();
 
         if (gamepad1.dpadUpWasPressed()) {
             shooter.autoSpeed(Shooter.Distance.FAR, voltageSensor.getVoltage());
@@ -139,11 +155,40 @@ public class BTJTeleOp extends OpMode {
         }
 
         if (gamepad1.yWasPressed()) {
-            if (parking.isRobotRaised()) {
-                parking.lowerRobot();
-            } else {
-                parking.raiseRobot();
+            parking.raiseRobot();
+            num = 0;
+        }
+        if (num == 0 && gamepad1.yWasPressed()) {
+            parking.lowerRobot();
+            num = 1;
+        }
+            {
+                 {
             }
+        }
+        if(gamepad1.bWasPressed()) {
+            intake.transportArtifactToShooter(Intake.Cell.LEFT);
+            sleep(500);
+            intake.transportArtifactToShooter(Intake.Cell.RIGHT);
+            sleep(500 );
+            intake.startAll(Intake.Direction.FORWARD);
+        }
+        LLResult llResult = limelight.getLatestResult();
+
+        shooter.setPower(power);
+        power = powerByDistance(llResult.getTa());
+
+
+        if(gamepad1.aWasPressed()){
+                power = powerByDistance(llResult.getTa());
+
+            if (shooter.getPower() == 0){
+                shooter.setPower(power);
+            }
+            else {
+                shooter.setPower(0);
+            }
+
         }
 
         parking.stayClosed();
@@ -160,12 +205,21 @@ public class BTJTeleOp extends OpMode {
     }
 
     public void printTelemetry() {
-        telemetry.addData("Shooter speed", shooter.getPower());
-        telemetry.addData("Power offset",shooter.powerOffset);
+        LLResult llResult = limelight.getLatestResult();
+        telemetry.addData("is valid",llResult.isValid());
 
 
-        telemetry.update();
+        if (llResult != null && llResult.isValid()) {
+            telemetry.addData("Shooter speed", shooter.getPower());
+            telemetry.addData("is valid",llResult.isValid());
+            telemetry.addData("TA ", llResult.getTa());
+            telemetry.update();
+        }
 
+
+    }
+    public double powerByDistance(double ta){
+        return shooter.p(ta, voltageSensor.getVoltage());
     }
 }
 

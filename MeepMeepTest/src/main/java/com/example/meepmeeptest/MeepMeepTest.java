@@ -44,6 +44,7 @@ public class MeepMeepTest {
                         .waitSeconds(1)
                         .forward(15)
                         .build());
+                        //יציאה מהארון
 
 
         Image img = null;
