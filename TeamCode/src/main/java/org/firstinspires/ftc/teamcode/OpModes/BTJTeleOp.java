@@ -79,10 +79,7 @@ public class BTJTeleOp extends OpMode {
             } else {
                 drive.resetIMU();
                 drive.activateFildo();
-
             }
-
-
         }
 
         parking.elevatorClosed();

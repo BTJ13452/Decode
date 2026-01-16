@@ -16,11 +16,11 @@ public class Parking {
 
     final double MOTOR_POWER_FOR_RAISING = -1;
     final double MOTOR_POWER_FOR_LOWERING = 0;
-    final double MOTOR_POWER_FOR_RESET = 0.5;
+    final double MOTOR_POWER_FOR_RESET = 0.2;
     final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
-    final int TIME_FOR_RESET = 1000;
+    final int TIME_FOR_RESET = 2000;
 
-    final int RESET_ERROR = 30;
+    final int RESET_ERROR = 10;
 
 
     boolean isRobotUp;
@@ -90,8 +90,14 @@ public class Parking {
         sleep(TIME_FOR_RESET);
         rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightElevator.setPower(0);
-        leftElevator.setPower(0);
+        rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightElevator.setTargetPosition(5);
+        leftElevator.setTargetPosition(5);
+        rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElevator.setPower(MOTOR_POWER_FOR_RESET);
+        leftElevator.setPower(MOTOR_POWER_FOR_RESET);
     }
 
     public void elevatorClosed() {
@@ -122,7 +128,7 @@ public class Parking {
     }
 
     private void stayClosed(DcMotor elevator) {
-        if (elevator.getCurrentPosition() > RESET_ERROR) {
+        if (Math.abs(elevator.getCurrentPosition() - elevator.getTargetPosition()) > RESET_ERROR) {
             elevator.setPower(MOTOR_POWER_FOR_RESET);
         } else {
             elevator.setPower(0);
