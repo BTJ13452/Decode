@@ -113,7 +113,7 @@ public class BTJTeleOp extends OpMode {
                 intake.thirdStageTransport(Intake.Direction.STOP);
             } else {
                 intake.firstStageIntake(Intake.Direction.FORWARD);
-//                intake.secondStageTransport(Intake.Direction.REVERSE);
+                intake.secondStageTransport(Intake.Direction.REVERSE);
             }
             waitForLongXPress.interrupt();
             waitForLongXPress.start();
