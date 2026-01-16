@@ -129,11 +129,11 @@ public class Shooter {
     }
 
     // pNewton(x)
-    public double p(double x, double voltage) {
+    public double calculatePowerByDistance(double ta, double voltage) {
         int range = voltageFindRange(voltage);
         if (range < 0 || cArray[range].isEmpty()) return 0;
 
-        return p(cArray[range].size() - 1, x, range);
+        return p(cArray[range].size() - 1, ta, range);
     }
 
 
@@ -150,6 +150,16 @@ public class Shooter {
         double basePower = SHOOTER_POWERS[Distance.getValue(d)][0];
         setPower(basePower + powerOffset);
     }
+
+    public boolean isActive(){
+        return getPower() != 0;
+    }
+
+    public void setPowerByDistance(double d,double v){
+        setPower(calculatePowerByDistance(d,v));
+    }
+
+
 
 
 

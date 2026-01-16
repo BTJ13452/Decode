@@ -71,12 +71,14 @@ public class TestShooter extends OpMode {
 //           power = powerByDistance(llResult.getTa());
             telemetry.addData("Shooter speed", shooter.getPower());
             telemetry.addData("TA ", llResult.getTa());
+            telemetry.addData("voltage", voltageSensor.getVoltage());
+
             telemetry.update();
         }
     }
 
     public double powerByDistance(double ta){
-        return shooter.p(ta, voltageSensor.getVoltage());
+        return shooter.calculatePowerByDistance(ta, voltageSensor.getVoltage());
   }
 
 
