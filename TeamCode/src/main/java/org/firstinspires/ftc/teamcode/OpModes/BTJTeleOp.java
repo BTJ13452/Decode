@@ -148,16 +148,16 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad1.bWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(600);
+            sleep(700);
             intake.transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(600);
+            sleep(900);
             intake.startAll(Intake.Direction.FORWARD);
         }
 
 
-        if (shooter.isActive()) {
-            updateShooter();
-        }
+//        if (shooter.isActive()) {
+//            updateShooter();
+//        }
 
         if (gamepad1.aWasPressed()) {
             if (shooter.isActive()) {
@@ -183,6 +183,8 @@ public class BTJTeleOp extends OpMode {
 
     public void printTelemetry() {
         telemetry.addData("power", shooter.getPower());
+        telemetry.addData("voltage", voltageSensor.getVoltage());
+
         telemetry.update();
     }
 
