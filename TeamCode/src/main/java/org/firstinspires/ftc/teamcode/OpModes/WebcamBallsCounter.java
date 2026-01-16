@@ -62,6 +62,8 @@ public class WebcamBallsCounter extends LinearOpMode {
                         PredominantColorProcessor.Swatch.BLACK
                 )
                 .build();
+
+
         VisionPortal portal = new VisionPortal.Builder()
                 .addProcessor(firstCell)
                 .addProcessor(secondCell)

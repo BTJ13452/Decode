@@ -62,7 +62,6 @@ public class BTJTeleOp extends OpMode {
         shooter = new Shooter(hardwareMap);
         parking = new Parking(hardwareMap);
         LEDs = new RGBController(hardwareMap);
-        LEDs.setGreen();
         power = 0;
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
@@ -148,16 +147,16 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad1.bWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(700);
+            sleep(600);
             intake.transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(900);
+            sleep(600);
             intake.startAll(Intake.Direction.FORWARD);
         }
 
 
-//        if (shooter.isActive()) {
-//            updateShooter();
-//        }
+        if (shooter.isActive()) {
+            updateShooter();
+        }
 
         if (gamepad1.aWasPressed()) {
             if (shooter.isActive()) {
@@ -165,6 +164,12 @@ public class BTJTeleOp extends OpMode {
             } else {
                 updateShooter();
             }
+        }
+
+        if (intake.areThreeIn()){
+            LEDs.setGreen();
+        }else {
+            LEDs.setOff();
         }
 
         parking.stayClosed();
@@ -183,8 +188,6 @@ public class BTJTeleOp extends OpMode {
 
     public void printTelemetry() {
         telemetry.addData("power", shooter.getPower());
-        telemetry.addData("voltage", voltageSensor.getVoltage());
-
         telemetry.update();
     }
 
