@@ -17,8 +17,8 @@ public class Intake {
         REVERSE,
         STOP;
 
-        public static int getValue(Direction d){
-            switch (d){
+        public static int getValue(Direction d) {
+            switch (d) {
                 case FORWARD:
                     return 1;
                 case REVERSE:
@@ -29,7 +29,7 @@ public class Intake {
         }
     }
 
-    public enum Cell{
+    public enum Cell {
         RIGHT,
         LEFT;
     }
@@ -53,14 +53,14 @@ public class Intake {
     PredominantColorProcessor thirdCell2;
 
     public Intake(HardwareMap hardwareMap) {
-        rightFirstStageIntakeServo = hardwareMap.get(CRServo.class, "rightServo");
-        leftFirstStageIntakeServo = hardwareMap.get(CRServo.class, "leftServo");
+        rightFirstStageIntakeServo = hardwareMap.get(CRServo.class, "1st Stage Right Servo");
+        leftFirstStageIntakeServo = hardwareMap.get(CRServo.class, "1st Stage Left Servo");
 
-        rightSecondStageTransportServo = hardwareMap.get(CRServo.class, "midRightServo");
-        leftSecondStageTransportServo = hardwareMap.get(CRServo.class, "midLeftServo");
+        rightSecondStageTransportServo = hardwareMap.get(CRServo.class, "2nd Stage Right Servo");
+        leftSecondStageTransportServo = hardwareMap.get(CRServo.class, "2nd Stage Left Servo");
 
-        leftThirdStageTransportServo = hardwareMap.get(CRServo.class, "wheel");
-        rightThirdStageTransportServo = hardwareMap.get(CRServo.class, "wheel2");
+        leftThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Left Servo");
+        rightThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Right Servo");
 
         rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
         leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
@@ -155,13 +155,12 @@ public class Intake {
         return !(rightFirstStageIntakeServo.getPower() == 0);
     }
 
-    public void transportArtifactToShooter(Cell cell){
+    public void transportArtifactToShooter(Cell cell) {
         firstStageIntake(Direction.FORWARD);
-        if(cell == Cell.RIGHT){
+        if (cell == Cell.RIGHT) {
             rightSecondStageTransport(Direction.FORWARD);
             leftSecondStageTransport(Direction.REVERSE);
-        }
-        else {
+        } else {
             leftSecondStageTransport(Direction.FORWARD);
             rightSecondStageTransport(Direction.REVERSE);
         }
