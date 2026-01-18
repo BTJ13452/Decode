@@ -67,15 +67,26 @@ public class Shooter {
         reset();
 
         // sample points
-        addPoint(1.0297, 0.61, 12.5);
-        addPoint(0.6385, 0.65, 12.5);
-        addPoint(2.135,  0.65, 12.5);
-        addPoint(0.2450, 0.79, 12.5);
-        addPoint(0.345,  0.71, 12.5);
-    //עד כאן לשנות
-        addPoint(0.24,   0.8,  12.5);
-        addPoint(0.29,   0.77, 12.5);
-        addPoint(0.35,   0.73, 12.5);
+//        addPoint(1.0297, 0.61, 12.5);
+//        addPoint(0.6385, 0.65, 12.5);
+//        addPoint(2.135,  0.65, 12.5);
+//        addPoint(0.2450, 0.79, 12.5);
+//        addPoint(0.345,  0.71, 12.5);
+//    //עד כאן לשנות
+//        addPoint(0.24,   0.8,  12.5);
+                    //12.5 volt
+        addPoint(0.24,0.73,12.5);
+        addPoint(0.62,0.65,12.5);
+        addPoint(2.6,0.68,12.5);
+                     //12 volt
+        addPoint(2.6,0.67,12);
+
+
+                    //11.5 volt
+
+                    //11 volt
+
+                    //10.5 volt
 
     }
 

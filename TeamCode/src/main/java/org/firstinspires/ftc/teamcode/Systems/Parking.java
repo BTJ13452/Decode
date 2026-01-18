@@ -18,6 +18,8 @@ public class Parking {
     final double MOTOR_POWER_FOR_LOWERING = 0;
     final double MOTOR_POWER_FOR_RESET = 0.2;
     final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
+    final int TICKS_FOR_LOCK = 20;
+    final int TICKS_FOR_CLOSE = 5;
     final int TIME_FOR_RESET = 2000;
 
     final int RESET_ERROR = 10;
@@ -84,7 +86,7 @@ public class Parking {
         return (first.getCurrentPosition() - second.getCurrentPosition()) / TICK_PER_CM;
     }
 
-    public void closeRobot() {
+    private void closeRobot() {
         rightElevator.setPower(-MOTOR_POWER_FOR_RESET);
         leftElevator.setPower(-MOTOR_POWER_FOR_RESET);
         sleep(TIME_FOR_RESET);
@@ -92,14 +94,35 @@ public class Parking {
         leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightElevator.setTargetPosition(5);
-        leftElevator.setTargetPosition(5);
+        rightElevator.setTargetPosition(TICKS_FOR_CLOSE);
+        leftElevator.setTargetPosition(TICKS_FOR_CLOSE);
         rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightElevator.setPower(MOTOR_POWER_FOR_RESET);
         leftElevator.setPower(MOTOR_POWER_FOR_RESET);
     }
 
+    public void lockRobot() {
+        rightElevator.setTargetPosition(TICKS_FOR_LOCK);
+        leftElevator.setTargetPosition(TICKS_FOR_LOCK);
+        rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElevator.setPower(MOTOR_POWER_FOR_RESET);
+        leftElevator.setPower(MOTOR_POWER_FOR_RESET);
+    }
+
+    public void releaseRobot() {
+        rightElevator.setTargetPosition(TICKS_FOR_CLOSE);
+        leftElevator.setTargetPosition(TICKS_FOR_CLOSE);
+        rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElevator.setPower(MOTOR_POWER_FOR_RESET);
+        leftElevator.setPower(MOTOR_POWER_FOR_RESET);
+    }
+
+    public boolean isRobotLocked() {
+        return rightElevator.getTargetPosition() == TICKS_FOR_LOCK;
+    }
 
 
     public void lowerRobot() {

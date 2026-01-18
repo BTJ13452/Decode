@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Systems;
 
+import static android.os.SystemClock.sleep;
+
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -44,13 +46,26 @@ public class Intake {
     CRServo leftThirdStageTransportServo;
 
 
-
-
     VisionPortal camera;
     PredominantColorProcessor firstCell;
     PredominantColorProcessor secondCell;
     PredominantColorProcessor thirdCell;
     PredominantColorProcessor thirdCell2;
+
+
+    Thread shootVolley = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            transportArtifactToShooter(Intake.Cell.RIGHT);
+            sleep(400);
+            transportArtifactToShooter(Intake.Cell.LEFT);
+            sleep(600);
+
+            startAll(Intake.Direction.FORWARD);
+            sleep(1000);
+            startAll(Direction.STOP);
+        }
+    });
 
     public Intake(HardwareMap hardwareMap) {
         rightFirstStageIntakeServo = hardwareMap.get(CRServo.class, "1st Stage Right Servo");
@@ -118,7 +133,6 @@ public class Intake {
                 .build();
 
 
-
     }
 
 
@@ -168,8 +182,17 @@ public class Intake {
     }
 
 
+    public void shootVolley() {
+        if (shootVolley.isAlive()){
+            shootVolley.interrupt();
+        }
+        else{
+            shootVolley.start();
+        }
+    }
 
-    public boolean areThreeIn(){
+
+    public boolean areThreeIn() {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
         PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
@@ -178,6 +201,15 @@ public class Intake {
         return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
                 secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
                 thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+    }
+
+    public void stop(){
+        if (shootVolley.isAlive()){
+         shootVolley.interrupt();
+        }
+        camera.close();
+
+        startAll(Direction.STOP);
     }
 
 }
