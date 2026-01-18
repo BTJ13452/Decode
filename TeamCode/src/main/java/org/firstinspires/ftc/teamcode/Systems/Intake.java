@@ -80,6 +80,7 @@ public class Intake {
         rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
         leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
 
+
         rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
         leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
 
