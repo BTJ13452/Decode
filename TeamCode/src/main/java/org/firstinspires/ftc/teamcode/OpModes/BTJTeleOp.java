@@ -51,6 +51,9 @@ public class BTJTeleOp extends OpMode {
         }
     });
 
+
+    boolean gamepad1RightTriggerWasPressed = false;
+
     @Override
     public void init() {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
@@ -112,6 +115,20 @@ public class BTJTeleOp extends OpMode {
             waitForLongXPress.start();
         }
 
+        if (gamepad1.right_trigger > 0.5 && !gamepad1RightTriggerWasPressed && !parking.isRobotRaised()) {
+            gamepad1RightTriggerWasPressed = true;
+
+            if (parking.isRobotLocked()){
+                parking.releaseRobot();
+            }else{
+                parking.lockRobot();
+            }
+
+        } else if (gamepad1.right_trigger <= 0.5) {
+            gamepad1RightTriggerWasPressed = false;
+        }
+
+
         if (gamepad1.leftBumperWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
         }
@@ -132,18 +149,14 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.yWasPressed()) {
             if (parking.isRobotRaised()) {
                 parking.lowerRobot();
-            }else {
+            } else {
                 parking.raiseRobot();
             }
         }
 
 
         if (gamepad1.bWasPressed()) {
-            intake.transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(800);
-            intake.transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(1000);
-            intake.startAll(Intake.Direction.FORWARD);
+            intake.shootVolley();
         }
 
 //
@@ -166,7 +179,7 @@ public class BTJTeleOp extends OpMode {
         }
 
 
-        if(!parking.isRobotRaised()){
+        if (!parking.isRobotRaised()) {
             parking.stayClosed();
         }
 
@@ -180,6 +193,7 @@ public class BTJTeleOp extends OpMode {
         }
         parking.stop();
         limelight.stop();
+        intake.stop();
     }
 
     public void printTelemetry() {
