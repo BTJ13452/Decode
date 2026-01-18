@@ -100,12 +100,6 @@ public class Parking {
         leftElevator.setPower(MOTOR_POWER_FOR_RESET);
     }
 
-    public void elevatorClosed() {
-        if (rightElevator.getCurrentPosition() >= 50 && leftElevator.getCurrentPosition() >= 50 && isRobotUp) {
-            rightElevator.setTargetPosition(0);
-            leftElevator.setTargetPosition(0);
-        }
-    }
 
 
     public void lowerRobot() {

@@ -22,9 +22,6 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 @TeleOp
 public class BTJTeleOp extends OpMode {
 
-    int num = 1;
-
-    int nub = 1;
     final int LONG_PRESS_MILLISECONDS = 500;
     double power;
 
@@ -66,7 +63,6 @@ public class BTJTeleOp extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
         limelight.start();
-
     }
 
     @Override
@@ -80,8 +76,6 @@ public class BTJTeleOp extends OpMode {
                 drive.activateFildo();
             }
         }
-
-        parking.elevatorClosed();
 
         if (gamepad1.dpadUpWasPressed()) {
             shooter.autoSpeed(Shooter.Distance.FAR, voltageSensor.getVoltage());
@@ -136,14 +130,13 @@ public class BTJTeleOp extends OpMode {
         }
 
         if (gamepad1.yWasPressed()) {
-            parking.raiseRobot();
-            num = 0;
+            if (parking.isRobotRaised()) {
+                parking.lowerRobot();
+            }else {
+                parking.raiseRobot();
+            }
+        }
 
-        }
-        if (num == 0 && gamepad1.yWasPressed()) {
-            parking.lowerRobot();
-            num = 1;
-        }
 
         if (gamepad1.bWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
@@ -166,13 +159,16 @@ public class BTJTeleOp extends OpMode {
             }
         }
 
-        if (intake.areThreeIn()){
+        if (intake.areThreeIn()) {
             LEDs.setGreen();
-        }else {
+        } else {
             LEDs.setOff();
         }
 
-        parking.stayClosed();
+
+        if(!parking.isRobotRaised()){
+            parking.stayClosed();
+        }
 
         printTelemetry();
     }
@@ -195,7 +191,7 @@ public class BTJTeleOp extends OpMode {
 
     public void updateShooter() {
         llResult = limelight.getLatestResult();
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 100; i++) {
             if (llResult != null && llResult.isValid()) {
                 shooter.setPowerByDistance(llResult.getTa(), voltageSensor.getVoltage());
                 telemetry.addData("shooter power", shooter.getPower());
