@@ -22,7 +22,7 @@ public class Parking {
     final int TICKS_FOR_CLOSE = 5;
     final int TIME_FOR_RESET = 2000;
 
-    final int RESET_ERROR = 10;
+    final int RESET_ERROR = 10   ;
 
 
     boolean isRobotUp;
@@ -109,6 +109,7 @@ public class Parking {
         leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightElevator.setPower(MOTOR_POWER_FOR_RESET);
         leftElevator.setPower(MOTOR_POWER_FOR_RESET);
+
     }
 
     public void releaseRobot() {
