@@ -21,7 +21,7 @@ public class Pinpoint extends OpMode {
         PinpointBTJ.setOffsets(166  ,37,DistanceUnit.CM);
         PinpointBTJ.setOffsets(98 ,37,DistanceUnit.CM);
         PinpointBTJ.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        PinpointBTJ.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        PinpointBTJ.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,GoBildaPinpointDriver.EncoderDirection.FORWARD);
         PinpointBTJ.resetPosAndIMU();
     }
 

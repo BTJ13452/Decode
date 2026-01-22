@@ -29,6 +29,7 @@ public class BTJTeleOp extends OpMode {
     VoltageSensor voltageSensor;
     Drive drive;
     Intake intake;
+
     Shooter shooter;
     Parking parking;
     RGBController LEDs;
@@ -159,7 +160,7 @@ public class BTJTeleOp extends OpMode {
             intake.shootVolley();
         }
 
-//
+
 //        if (shooter.isActive()) {
 //            updateShooter();
 //        }
