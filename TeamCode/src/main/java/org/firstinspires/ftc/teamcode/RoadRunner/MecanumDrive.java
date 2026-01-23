@@ -63,13 +63,13 @@ public final class MecanumDrive {
 
         // drive model parameters
         public double inPerTick = 0.0019787090901896;
-        public double lateralInPerTick = 0.0014248668942159752;
-        public double trackWidthTicks = 363532.94136550394;
+        public double lateralInPerTick =  0.0013720253187901811;
+        public double trackWidthTicks = 363973.68859895575;
 
         // feedforward parameters (in tick units)
-        public double kS = 1.3390164148303714;
-        public double kV = 0.00025331459066363945;
-        public double kA = 0.00008;
+        public double kS = 1.4598263224530914;
+        public double kV = 0.0002541615443876549;
+        public double kA = 0.00007;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -81,7 +81,7 @@ public final class MecanumDrive {
         public double maxAngAccel = Math.PI;
 
         // path controller gains
-        public double axialGain = 2;
+        public double axialGain = 4;
         public double lateralGain = 3;
         public double headingGain = 0; // shared with turn
 
@@ -225,18 +225,17 @@ public final class MecanumDrive {
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
         leftFront = hardwareMap.get(DcMotorEx.class, "Front left");
         leftBack = hardwareMap.get(DcMotorEx.class, "Back left");
-        rightBack = hardwareMap.get(DcMotorEx.class, "Back right");
         rightFront = hardwareMap.get(DcMotorEx.class, "Front right");
+        rightBack = hardwareMap.get(DcMotorEx.class, "Back right");
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
         rightBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
-
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html
@@ -245,7 +244,7 @@ public final class MecanumDrive {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        localizer = new TwoDeadWheelLocalizer(hardwareMap, lazyImu.get(), PARAMS.inPerTick, pose);
+        localizer = new PinpointLocalizer(hardwareMap, PARAMS.inPerTick, pose);
 
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
