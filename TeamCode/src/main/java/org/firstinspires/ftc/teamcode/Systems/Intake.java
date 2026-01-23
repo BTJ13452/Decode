@@ -5,6 +5,7 @@ import static android.os.SystemClock.sleep;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -77,12 +78,12 @@ public class Intake {
         leftThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Left Servo");
         rightThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Right Servo");
 
-        rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
 
 
-        rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
-        leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
+        rightFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
+        leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
 
         leftThirdStageTransportServo.setDirection(CRServo.Direction.FORWARD);
         rightThirdStageTransportServo.setDirection(CRServo.Direction.REVERSE);

@@ -22,8 +22,6 @@ public class Drive {
     double heading;
 
     boolean isFildoOn;
-
-
     public Drive(HardwareMap hardwareMap, double heading){
         motorFrontLeft = hardwareMap.dcMotor.get("Front left");
         motorFrontRight = hardwareMap.dcMotor.get("Front right");
