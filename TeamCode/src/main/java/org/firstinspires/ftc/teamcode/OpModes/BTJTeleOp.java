@@ -65,7 +65,7 @@ public class BTJTeleOp extends OpMode {
         LEDs = new RGBController(hardwareMap);
         power = 0;
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(1);
         limelight.start();
     }
 

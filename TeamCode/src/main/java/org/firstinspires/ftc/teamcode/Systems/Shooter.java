@@ -10,7 +10,6 @@ import java.util.List;
 public class Shooter {
 
 
-
     public enum Distance {
         CLOSE,
         MID,
@@ -18,22 +17,23 @@ public class Shooter {
 
         public static int getValue(Distance d) {
             switch (d) {
-                case CLOSE: return 0;
-                case MID:   return 1;
-                case FAR:   return 2;
+                case CLOSE:
+                    return 0;
+                case MID:
+                    return 1;
+                case FAR:
+                    return 2;
             }
             return 0;
         }
     }
 
 
-
     double[][] SHOOTER_POWERS = {
-            {0.7,  0.655, 0.65, 0.65},   // CLOSE
-            {0.8,  0.68,  0.66, 0.64},   // MID
-            {0.9,  0.855, 0.8,  0.78}    // FAR
+            {0.7, 0.655, 0.65, 0.65},   // CLOSE
+            {0.8, 0.68, 0.66, 0.64},   // MID
+            {0.9, 0.855, 0.8, 0.78}    // FAR
     };
-
 
 
     DcMotor ShooterMotorR;
@@ -49,13 +49,12 @@ public class Shooter {
     private final List<Double>[] cArray = new ArrayList[6];
 
 
-
     public Shooter(HardwareMap hardwareMap) {
 
-        ShooterMotorR = hardwareMap.dcMotor.get("ShooterMotorR");
+//        ShooterMotorR = hardwareMap.dcMotor.get("ShooterMotorR");
         ShooterMotorL = hardwareMap.dcMotor.get("ShooterMotorL");
 
-        ShooterMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
+//        ShooterMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
         ShooterMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // init arrays
@@ -74,22 +73,31 @@ public class Shooter {
 //        addPoint(0.345,  0.71, 12.5);
 //    //עד כאן לשנות
 //        addPoint(0.24,   0.8,  12.5);
-                    //12.5 volt
-        addPoint(0.24,0.73,12.5);
-        addPoint(0.62,0.65,12.5);
-        addPoint(2.6,0.68,12.5);
-                     //12 volt
-        addPoint(2.6,0.67,12);
+        //12.5 volt
+//        addPoint(0.24,0.73,12.5);
+//        addPoint(0.62,0.65,12.5);
+//        addPoint(2.6,0.68,12.5);
+        addPoint(2.6353, 0.69, 12.402);
+        addPoint(0.2383, 0.74, 12.740);
+        addPoint(0.3293, 0.72, 12.593);
+        addPoint(0.6688, 0.66, 12.585);
+        addPoint(0.6302, 0.69, 12.557);
+        addPoint(0.6788, 0.66, 12.638);
+        addPoint(0.23, 0.74, 12.742);
+        addPoint(0.24895, 0.74, 12.893);
 
 
-                    //11.5 volt
+//                     //12 volt
+//        addPoint(2.6,0.67,12);
 
-                    //11 volt
 
-                    //10.5 volt
+        //11.5 volt
+
+        //11 volt
+
+        //10.5 volt
 
     }
-
 
 
     // p(i, x)
@@ -123,7 +131,6 @@ public class Shooter {
     }
 
 
-
     public void addPoint(double x, double y, double voltage) {
         int range = voltageFindRange(voltage);
         if (range < 0) return;
@@ -140,12 +147,12 @@ public class Shooter {
     }
 
     // pNewton(x)
-    public double calculatePowerByDistance(double ta, double voltage) {
-        int range = voltageFindRange(voltage);
-        if (range < 0 || cArray[range].isEmpty()) return 0;
-
-        return p(cArray[range].size() - 1, ta, range);
-    }
+//    public double calculatePowerByDistance(double ta, double voltage) {
+//        int range = voltageFindRange(voltage);
+//        if (range < 0 || cArray[range].isEmpty()) return 0;
+//
+//        return p(cArray[range].size() - 1, ta, range);
+//    }
 
 
     public void setPower(double power) {
@@ -162,23 +169,32 @@ public class Shooter {
         setPower(basePower + powerOffset);
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return getPower() != 0;
     }
 
-    public void setPowerByDistance(double d,double v){
-        setPower(calculatePowerByDistance(d,v));
+//    public void setPowerByDistance(double d, double v) {
+//        setPower(calculatePowerByDistance(d, v));
+//    }
+
+    public void setPowerByDistance(double d, double v) {
+        setPower(calculatePowerWithDistance(d, v));
     }
 
+    public double calculatePowerWithDistance(double d, double v) {
 
 
+        return (-0.0741301 * d * d * d + 0.345369 * d * d - 0.448185 * d +0.82909);
+
+
+    }
 
 
     public int voltageFindRange(double voltage) {
 
         if (Double.isNaN(voltage)) return 0;
 
-        if (voltage <= 9)  return 0;
+        if (voltage <= 9) return 0;
         if (voltage <= 10) return 1;
         if (voltage <= 11) return 2;
         if (voltage <= 12) return 3;
