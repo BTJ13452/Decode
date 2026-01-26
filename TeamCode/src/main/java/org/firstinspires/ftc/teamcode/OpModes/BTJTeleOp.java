@@ -173,11 +173,14 @@ public class BTJTeleOp extends OpMode {
             }
         }
 
-        if (intake.areThreeIn()) {
-            LEDs.setGreen();
-        } else {
-            LEDs.setOff();
+        for (int t = 0; t < 100; t++) {
+            if (intake.areThreeIn()) {
+                LEDs.setGreen();
+            } else {
+                LEDs.setOff();
+            }
         }
+
 
 
         if (!parking.isRobotRaised()) {

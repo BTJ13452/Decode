@@ -20,7 +20,7 @@ public class Parking {
     final double MOTOR_POWER_FOR_RESET = 0.2;
 //
     final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
-    final int TICKS_FOR_LOCK = 20;
+    final int TICKS_FOR_LOCK = 40;
     final int TICKS_FOR_CLOSE = 5;
     final int TIME_FOR_RESET = 2000;
 //
