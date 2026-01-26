@@ -5,6 +5,7 @@ import static android.os.SystemClock.sleep;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -43,8 +44,7 @@ public class Intake {
     CRServo leftFirstStageIntakeServo;
     CRServo rightSecondStageTransportServo;
     CRServo leftSecondStageTransportServo;
-    CRServo rightThirdStageTransportServo;
-    CRServo leftThirdStageTransportServo;
+    DcMotor thirdStageTransportMotor;
 
 
     VisionPortal camera;
@@ -58,9 +58,9 @@ public class Intake {
         @Override
         public void run() {
             transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(400);
+            sleep(100);
             transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(600);
+            sleep(100);
 
             startAll(Intake.Direction.FORWARD);
             sleep(1000);
@@ -75,18 +75,17 @@ public class Intake {
         rightSecondStageTransportServo = hardwareMap.get(CRServo.class, "2nd Stage Right Servo");
         leftSecondStageTransportServo = hardwareMap.get(CRServo.class, "2nd Stage Left Servo");
 
-        leftThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Left Servo");
-        rightThirdStageTransportServo = hardwareMap.get(CRServo.class, "3rd Stage Right Servo");
-
-        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
-
+        thirdStageTransportMotor = hardwareMap.dcMotor.get("3rd Stage Motor");
 
         rightFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
         leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
 
-        leftThirdStageTransportServo.setDirection(CRServo.Direction.FORWARD);
-        rightThirdStageTransportServo.setDirection(CRServo.Direction.REVERSE);
+
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
+
+        thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
+
 
         firstCell = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.60, -0.4, -0.45, -0.6))
@@ -133,8 +132,6 @@ public class Intake {
                 .setCameraResolution(new Size(1280, 720))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .build();
-
-
     }
 
 
@@ -157,8 +154,7 @@ public class Intake {
     }
 
     public void thirdStageTransport(Direction d) {
-        leftThirdStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
-        rightThirdStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
+        thirdStageTransportMotor.setPower(IN_POWER * Direction.getValue(d));
     }
 
     public void startAll(Direction d) {

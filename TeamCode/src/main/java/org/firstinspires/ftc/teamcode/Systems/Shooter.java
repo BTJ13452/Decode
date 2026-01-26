@@ -32,12 +32,12 @@ public class Shooter {
     double[][] SHOOTER_POWERS = {
             {0.7, 0.655, 0.65, 0.65},   // CLOSE
             {0.8, 0.68, 0.66, 0.64},   // MID
-            {0.9, 0.855, 0.8, 0.78}    // FAR
+            {1, 0.855, 0.8, 0.78}    // FAR
     };
 
 
-    DcMotor ShooterMotorR;
-    DcMotor ShooterMotorL;
+
+    DcMotor ShooterMotor;
 
     public double powerOffset = 0;
 
@@ -51,11 +51,10 @@ public class Shooter {
 
     public Shooter(HardwareMap hardwareMap) {
 
-//        ShooterMotorR = hardwareMap.dcMotor.get("ShooterMotorR");
-        ShooterMotorL = hardwareMap.dcMotor.get("ShooterMotorL");
 
-//        ShooterMotorR.setDirection(DcMotorSimple.Direction.REVERSE);
-        ShooterMotorL.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterMotor = hardwareMap.dcMotor.get("shooter Motor");
+
+        ShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // init arrays
         for (int i = 0; i < 6; i++) {
@@ -156,12 +155,11 @@ public class Shooter {
 
 
     public void setPower(double power) {
-        ShooterMotorR.setPower(power);
-        ShooterMotorL.setPower(power);
+        ShooterMotor.setPower(power);
     }
 
     public double getPower() {
-        return ShooterMotorL.getPower();
+        return ShooterMotor.getPower();
     }
 
     public void autoSpeed(Distance d, double voltage) {

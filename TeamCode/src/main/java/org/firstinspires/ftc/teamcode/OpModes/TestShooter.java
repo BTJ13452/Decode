@@ -78,7 +78,7 @@ public class TestShooter extends OpMode {
     }
 
     public double powerByDistance(double ta){
-        return shooter.calculatePowerByDistance(ta, voltageSensor.getVoltage());
+        return shooter.calculatePowerWithDistance(ta, voltageSensor.getVoltage());
   }
 
 

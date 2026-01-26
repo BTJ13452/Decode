@@ -68,6 +68,9 @@ public class SensorLimelight3A extends LinearOpMode {
 
             if (llResult != null && llResult.isValid()) {
                 telemetry.addData("TA ", llResult.getTa());
+                if(limelight.getLatestResult().getFiducialResults().size() > 0){
+                    telemetry.addData("ID",limelight.getLatestResult().getFiducialResults().get(0).getFiducialId());
+                }
                 telemetry.addData("count", llResult.getBotposeTagCount());
                 telemetry.update();
             }
