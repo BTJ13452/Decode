@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode.OpModes;
 
 import static android.os.SystemClock.sleep;
 
-import com.acmerobotics.dashboard.message.redux.ReceiveGamepadState;
-import com.acmerobotics.roadrunner.SleepAction;
+import android.util.Log;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorLimelight3A;
@@ -23,13 +22,13 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 public class BTJTeleOp extends OpMode {
 
     final int LONG_PRESS_MILLISECONDS = 500;
+    final Double CONTENT_SHOOTER_SPEED = 0.7;
     double power;
 
 
     VoltageSensor voltageSensor;
     Drive drive;
     Intake intake;
-
     Shooter shooter;
     Parking parking;
     RGBController LEDs;
@@ -71,6 +70,7 @@ public class BTJTeleOp extends OpMode {
 
     @Override
     public void loop() {
+
         drive.drive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
         if (gamepad1.leftStickButtonWasPressed()) {
             if (drive.isFildoOn()) {
@@ -80,21 +80,47 @@ public class BTJTeleOp extends OpMode {
                 drive.activateFildo();
             }
         }
+//        if (!shooter.isActive()) {
+//            shooter.setPower(CONTENT_SHOOTER_SPEED);
+//        }
 
         if (gamepad1.dpadUpWasPressed()) {
-            shooter.autoSpeed(Shooter.Distance.FAR, voltageSensor.getVoltage());
+            shooter.setPower(shooter.SHOOTER_SPEED_FOUR + shooter.powerOffset);
         }
 
         if (gamepad1.dpadRightWasPressed()) {
-            shooter.autoSpeed(Shooter.Distance.MID, voltageSensor.getVoltage());
+            shooter.setPower(shooter.SHOOTER_SPEED_THREE + shooter.powerOffset);
         }
 
         if (gamepad1.dpadLeftWasPressed()) {
-            shooter.autoSpeed(Shooter.Distance.CLOSE, voltageSensor.getVoltage());
+            shooter.setPower(shooter.SHOOTER_SPEED_TWO + shooter.powerOffset);
         }
 
-        if (gamepad1.dpadDownWasPressed()) {
-            shooter.setPower(0);
+        if (gamepad1.dpadDownWasPressed())
+        {
+            if(shooter.getPower()==shooter.SHOOTER_SPEED_ONE ) {
+                shooter.setPower(0);
+            }
+            else {
+                shooter.setPower(shooter.SHOOTER_SPEED_ONE + shooter.powerOffset);
+            }
+
+
+        }
+        if (gamepad2.dpadUpWasPressed()) {
+            shooter.powerOffset += 0.1;
+        }
+
+        if (gamepad2.dpadRightWasPressed()) {
+            shooter.powerOffset += 0.01;
+        }
+
+        if (gamepad2.dpadDownWasPressed()) {
+            shooter.powerOffset -= 0.1;
+        }
+
+        if (gamepad2.dpadLeftWasPressed()) {
+            shooter.powerOffset -= 0.01;
         }
 
         if (gamepad1.rightStickButtonWasPressed()) {
@@ -111,6 +137,7 @@ public class BTJTeleOp extends OpMode {
             } else {
                 intake.firstStageIntake(Intake.Direction.FORWARD);
                 intake.secondStageTransport(Intake.Direction.REVERSE);
+                intake.thirdStageTransport(Intake.Direction.REVERSE);
             }
             waitForLongXPress.interrupt();
             waitForLongXPress.start();
@@ -119,9 +146,9 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.right_trigger > 0.5 && !gamepad1RightTriggerWasPressed && !parking.isRobotRaised()) {
             gamepad1RightTriggerWasPressed = true;
 
-            if (parking.isRobotLocked()){
+            if (parking.isRobotLocked()) {
                 parking.releaseRobot();
-            }else{
+            } else {
                 parking.lockRobot();
             }
 
@@ -173,14 +200,12 @@ public class BTJTeleOp extends OpMode {
             }
         }
 
-        for (int t = 0; t < 100; t++) {
+
             if (intake.areThreeIn()) {
                 LEDs.setGreen();
             } else {
                 LEDs.setOff();
             }
-        }
-
 
 
         if (!parking.isRobotRaised()) {

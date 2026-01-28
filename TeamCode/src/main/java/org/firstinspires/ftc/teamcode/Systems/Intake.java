@@ -58,12 +58,11 @@ public class Intake {
         @Override
         public void run() {
             transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(100);
+            sleep(150);
             transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(100);
-
+            sleep(800);
             startAll(Intake.Direction.FORWARD);
-            sleep(1000);
+            sleep(1500);
             startAll(Direction.STOP);
         }
     });
@@ -88,7 +87,7 @@ public class Intake {
 
 
         firstCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.60, -0.4, -0.45, -0.6))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.60, -0.35, -0.45, -0.6))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -97,7 +96,7 @@ public class Intake {
                 .build();
 
         secondCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(0.10, -0.36, 0.20, -0.6))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.5, -0.35, 0.65, -0.6))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -106,7 +105,7 @@ public class Intake {
                 .build();
 
         thirdCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.625, 0.5, -0.5, 0.4))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.15, 0, 0))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -114,20 +113,12 @@ public class Intake {
                 )
                 .build();
 
-        thirdCell2 = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.8, 0.4, -0.40, 0.2))
-                .setSwatches(
-                        PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
-                        PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.BLACK
-                )
-                .build();
+
 
         camera = new VisionPortal.Builder()
                 .addProcessor(firstCell)
                 .addProcessor(secondCell)
                 .addProcessor(thirdCell)
-                .addProcessor(thirdCell2)
 
                 .setCameraResolution(new Size(1280, 720))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
@@ -194,7 +185,6 @@ public class Intake {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
         PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult2 = thirdCell.getAnalysis();
 
         return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
                 secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
