@@ -8,7 +8,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import java.util.Objects;
@@ -16,8 +18,8 @@ import java.util.Objects;
 @Config
 public final class PinpointLocalizer implements Localizer {
     public static class Params {
-        public double parYTicks = -174759.16803809383; // y position of the parallel encoder (in tick units)
-        public double perpXTicks = -103979.68647239819; // x position of the perpendicular encoder (in tick units)
+        public double parYTicks =  -160737.65871649212; // y position of the parallel encoder (in tick units)
+        public double perpXTicks = -112258.14559158708; // x po-112258.14559158708sition of the perpendicular encoder (in tick units)
     }
 
     public static Params PARAMS = new Params();
@@ -40,7 +42,7 @@ public final class PinpointLocalizer implements Localizer {
         // TODO: reverse encoder directions if needed
         initialParDirection = GoBildaPinpointDriver.EncoderDirection.REVERSED
 
-         ;
+        ;
         initialPerpDirection = GoBildaPinpointDriver.EncoderDirection.FORWARD;
 
         driver.setEncoderDirections(initialParDirection, initialPerpDirection);
@@ -48,6 +50,7 @@ public final class PinpointLocalizer implements Localizer {
         driver.resetPosAndIMU();
 
         txWorldPinpoint = initialPose;
+
     }
 
     @Override
