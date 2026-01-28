@@ -11,18 +11,21 @@ public class Shooter {
 
 
     public enum Distance {
-        CLOSE,
-        MID,
-        FAR;
+        ONE,
+        TWO,
+        THREE,
+        FOUR;
 
         public static int getValue(Distance d) {
             switch (d) {
-                case CLOSE:
+                case ONE:
                     return 0;
-                case MID:
+                case TWO:
                     return 1;
-                case FAR:
+                case THREE:
                     return 2;
+                case FOUR:
+                    return 3;
             }
             return 0;
         }
@@ -47,6 +50,11 @@ public class Shooter {
 
     // cArray[range] = [c0, c1, c2, ...]
     private final List<Double>[] cArray = new ArrayList[6];
+    public  final double SHOOTER_SPEED_ONE = 0.7;
+    public final double SHOOTER_SPEED_TWO = 0.8;
+    public final double SHOOTER_SPEED_THREE = 0.9;
+    public final double SHOOTER_SPEED_FOUR = 1;
+
 
 
     public Shooter(HardwareMap hardwareMap) {
@@ -182,7 +190,7 @@ public class Shooter {
     public double calculatePowerWithDistance(double d, double v) {
 
 
-        return (-0.0741301 * d * d * d + 0.345369 * d * d - 0.448185 * d +0.82909);
+        return (-0.517752 * d * d * d * d + 0 * d * d * d +4.57409 * d * d -3.41582 * d +1.3555);
 
 
     }

@@ -45,6 +45,7 @@ public class TestShooter extends OpMode {
 
     @Override
     public void loop() {
+        shooter.setPower(power);
 
         if (gamepad1.dpadUpWasPressed()) {
             power += 0.1;
@@ -63,23 +64,22 @@ public class TestShooter extends OpMode {
         }
 
 
-        shooter.setPower(power);
-
         LLResult llResult = limelight.getLatestResult();
 
         if (llResult != null && llResult.isValid()) {
-//           power = powerByDistance(llResult.getTa());
-            telemetry.addData("Shooter speed", shooter.getPower());
             telemetry.addData("TA ", llResult.getTa());
+            telemetry.addData("Shooter speed", shooter.getPower());
             telemetry.addData("voltage", voltageSensor.getVoltage());
-
             telemetry.update();
         }
+
+
+
     }
 
-    public double powerByDistance(double ta){
+    public double powerByDistance(double ta) {
         return shooter.calculatePowerWithDistance(ta, voltageSensor.getVoltage());
-  }
+    }
 
 
     @Override
