@@ -72,14 +72,14 @@ public class BTJTeleOp extends OpMode {
     public void loop() {
 
         drive.drive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
-        if (gamepad1.leftStickButtonWasPressed()) {
-            if (drive.isFildoOn()) {
-                drive.cancelFildo();
-            } else {
-                drive.resetIMU();
-                drive.activateFildo();
-            }
-        }
+//        if (gamepad1.leftStickButtonWasPressed()) {
+//            if (drive.isFildoOn()) {
+//                drive.cancelFildo();
+//            } else {
+//                drive.resetIMU();
+//                drive.activateFildo();
+//            }
+//        }
 //        if (!shooter.isActive()) {
 //            shooter.setPower(CONTENT_SHOOTER_SPEED);
 //        }
@@ -111,6 +111,7 @@ public class BTJTeleOp extends OpMode {
             shooter.powerOffset += 0.1;
         }
 
+
         if (gamepad2.dpadRightWasPressed()) {
             shooter.powerOffset += 0.01;
         }
@@ -135,7 +136,7 @@ public class BTJTeleOp extends OpMode {
                 intake.secondStageTransport(Intake.Direction.STOP);
                 intake.thirdStageTransport(Intake.Direction.STOP);
             } else {
-                intake.firstStageIntake(Intake.Direction.FORWARD);
+                intake.firstStageIntake(Intake.Direction.REVERSE);
                 intake.secondStageTransport(Intake.Direction.REVERSE);
                 intake.thirdStageTransport(Intake.Direction.REVERSE);
             }

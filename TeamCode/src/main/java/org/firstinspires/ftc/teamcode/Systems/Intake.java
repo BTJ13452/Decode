@@ -58,11 +58,11 @@ public class Intake {
         @Override
         public void run() {
             transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(150);
+            sleep(200);
             transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(800);
-            startAll(Intake.Direction.FORWARD);
             sleep(1500);
+            startAll(Direction.FORWARD);
+            sleep(2500);
             startAll(Direction.STOP);
         }
     });
@@ -80,8 +80,8 @@ public class Intake {
         leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
 
 
-        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
 
         thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -105,7 +105,7 @@ public class Intake {
                 .build();
 
         thirdCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.1, 0.15, 0, 0))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.2, 0.15, -0.05, 0))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -159,7 +159,7 @@ public class Intake {
     }
 
     public void transportArtifactToShooter(Cell cell) {
-        firstStageIntake(Direction.FORWARD);
+        firstStageIntake(Direction.REVERSE);
         if (cell == Cell.RIGHT) {
             rightSecondStageTransport(Direction.FORWARD);
             leftSecondStageTransport(Direction.REVERSE);
