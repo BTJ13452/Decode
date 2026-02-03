@@ -53,16 +53,15 @@ public class Intake {
     PredominantColorProcessor thirdCell;
     PredominantColorProcessor thirdCell2;
 
-
     Thread shootVolley = new Thread(new Runnable() {
         @Override
         public void run() {
-            transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(200);
-            transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(1500);
-            startAll(Direction.FORWARD);
-            sleep(2500);
+            transportArtifactToShooter(Cell.RIGHT);
+            sleep(500);
+            transportArtifactToShooter(Cell.LEFT);
+            sleep(500);
+            startAll(Direction.REVERSE);
+            sleep(1000);
             startAll(Direction.STOP);
         }
     });
@@ -161,10 +160,13 @@ public class Intake {
     public void transportArtifactToShooter(Cell cell) {
         firstStageIntake(Direction.REVERSE);
         if (cell == Cell.RIGHT) {
-            rightSecondStageTransport(Direction.FORWARD);
             leftSecondStageTransport(Direction.REVERSE);
-        } else {
+            sleep(600);
+            rightSecondStageTransport(Direction.FORWARD);
+        }
+        else {
             leftSecondStageTransport(Direction.FORWARD);
+            sleep(600);
             rightSecondStageTransport(Direction.REVERSE);
         }
         thirdStageTransport(Direction.FORWARD);
