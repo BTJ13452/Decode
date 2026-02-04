@@ -170,6 +170,10 @@ public class Parking {
             fixElevatorsDistance.interrupt();
         }
     }
+    public void openALittleBit() {
+        rightElevator.setTargetPosition(170);
+        leftElevator.setTargetPosition(170);
+    }
 }
 
 
