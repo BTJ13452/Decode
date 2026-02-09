@@ -9,7 +9,7 @@ import com.acmerobotics.roadrunner.Pose2d;
 
 import org.firstinspires.ftc.teamcode.RoadRunner.MecanumDrive;
 
-@Autonomous(group = "Autonomous")
+    @Autonomous(group = "Autonomous")
 
 public class AutonomousRed extends LinearOpMode {
     public static final double DELAY = 0.2;

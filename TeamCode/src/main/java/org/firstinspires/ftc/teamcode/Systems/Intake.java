@@ -200,4 +200,7 @@ public class Intake {
         startAll(Direction.STOP);
     }
 
+    public boolean isShootVolleyAlive() {
+        return shootVolley.isAlive();
+    }
 }
