@@ -60,9 +60,11 @@ public class Intake {
             sleep(500);
             transportArtifactToShooter(Cell.LEFT);
             sleep(500);
-            startAll(Direction.REVERSE);
+            startAll(Direction.FORWARD);
             sleep(1000);
-            startAll(Direction.STOP);
+            firstStageIntake(Direction.FORWARD);
+            secondStageTransport(Direction.REVERSE);
+            thirdStageTransport(Direction.REVERSE);
         }
     });
 
@@ -75,12 +77,12 @@ public class Intake {
 
         thirdStageTransportMotor = hardwareMap.dcMotor.get("3rd Stage Motor");
 
-        rightFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
-        leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
+        rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
+        leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
 
 
-        rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE   );
 
         thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -158,16 +160,14 @@ public class Intake {
     }
 
     public void transportArtifactToShooter(Cell cell) {
-        firstStageIntake(Direction.REVERSE);
+        firstStageIntake(Direction.FORWARD);
         if (cell == Cell.RIGHT) {
             leftSecondStageTransport(Direction.REVERSE);
-            sleep(600);
             rightSecondStageTransport(Direction.FORWARD);
         }
         else {
-            leftSecondStageTransport(Direction.FORWARD);
-            sleep(600);
             rightSecondStageTransport(Direction.REVERSE);
+            leftSecondStageTransport(Direction.FORWARD);
         }
         thirdStageTransport(Direction.FORWARD);
     }
