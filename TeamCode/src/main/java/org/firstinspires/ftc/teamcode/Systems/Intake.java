@@ -53,17 +53,18 @@ public class Intake {
     PredominantColorProcessor thirdCell;
     PredominantColorProcessor thirdCell2;
 
-
     Thread shootVolley = new Thread(new Runnable() {
         @Override
         public void run() {
-            transportArtifactToShooter(Intake.Cell.RIGHT);
-            sleep(200);
-            transportArtifactToShooter(Intake.Cell.LEFT);
-            sleep(1500);
+            transportArtifactToShooter(Cell.RIGHT);
+            sleep(500);
+            transportArtifactToShooter(Cell.LEFT);
+            sleep(500);
             startAll(Direction.FORWARD);
-            sleep(2500);
-            startAll(Direction.STOP);
+            sleep(1000);
+            firstStageIntake(Direction.FORWARD);
+            secondStageTransport(Direction.REVERSE);
+            thirdStageTransport(Direction.REVERSE);
         }
     });
 
@@ -76,12 +77,12 @@ public class Intake {
 
         thirdStageTransportMotor = hardwareMap.dcMotor.get("3rd Stage Motor");
 
-        rightFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
-        leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
+        rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
+        leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
 
 
-        rightSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE   );
 
         thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -159,13 +160,14 @@ public class Intake {
     }
 
     public void transportArtifactToShooter(Cell cell) {
-        firstStageIntake(Direction.REVERSE);
+        firstStageIntake(Direction.FORWARD);
         if (cell == Cell.RIGHT) {
-            rightSecondStageTransport(Direction.FORWARD);
             leftSecondStageTransport(Direction.REVERSE);
-        } else {
-            leftSecondStageTransport(Direction.FORWARD);
+            rightSecondStageTransport(Direction.FORWARD);
+        }
+        else {
             rightSecondStageTransport(Direction.REVERSE);
+            leftSecondStageTransport(Direction.FORWARD);
         }
         thirdStageTransport(Direction.FORWARD);
     }
@@ -180,7 +182,17 @@ public class Intake {
         }
     }
 
+    public boolean whatDirectionThePurpleBall() {
+        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
+        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
 
+        return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+                firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.GREEN &&
+                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.PURPLE &&
+                thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+    }
     public boolean areThreeIn() {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
