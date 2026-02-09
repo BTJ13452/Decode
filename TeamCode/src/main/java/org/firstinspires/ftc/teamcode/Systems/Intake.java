@@ -182,7 +182,17 @@ public class Intake {
         }
     }
 
+    public boolean whatDirectionThePurpleBall() {
+        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
+        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
 
+        return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+                firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.GREEN &&
+                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.PURPLE &&
+                thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+    }
     public boolean areThreeIn() {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
