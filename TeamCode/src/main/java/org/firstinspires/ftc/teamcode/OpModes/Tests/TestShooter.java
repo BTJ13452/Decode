@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -12,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 
 @TeleOp
+@Disabled
+
 public class TestShooter extends OpMode {
 
 
@@ -76,12 +79,6 @@ public class TestShooter extends OpMode {
 
 
     }
-
-    public double powerByDistance(double ta) {
-        return shooter.calculatePowerWithDistance(ta, voltageSensor.getVoltage());
-    }
-
-
     @Override
     public void stop() {
         limelight.stop();

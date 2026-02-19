@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Drive {
 
-    final double ROTATION_SENSITIVITY = 1  ;
+    final double ROTATION_SENSITIVITY = 1;
 
     IMU imu;
 
@@ -22,7 +22,8 @@ public class Drive {
     double heading;
 
     boolean isFildoOn;
-    public Drive(HardwareMap hardwareMap, double heading){
+
+    public Drive(HardwareMap hardwareMap, double heading, boolean isFildoOn) {
         motorFrontLeft = hardwareMap.dcMotor.get("Front left");
         motorFrontRight = hardwareMap.dcMotor.get("Front right");
         motorBackLeft = hardwareMap.dcMotor.get("Back left");
@@ -40,23 +41,21 @@ public class Drive {
 
         imu = hardwareMap.get(IMU.class, "imu");
 
-
-
-        imu.initialize( new IMU.Parameters(new RevHubOrientationOnRobot(
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP)));
         resetIMU();
 
-        isFildoOn = false;
+        this.isFildoOn = isFildoOn;
 
         this.heading = (heading / 180) * Math.PI;
     }
 
-    public void drive(double x,double y, double r){
+    public void drive(double x, double y, double r) {
         r *= ROTATION_SENSITIVITY;
 
 
-         if (isFildoOn){
+        if (isFildoOn) {
             double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) + heading;
 
             double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -78,17 +77,17 @@ public class Drive {
         motorBackRight.setPower(rightBackPower);
     }
 
-    public void resetIMU(){
+    public void resetIMU() {
         imu.resetYaw();
         heading = 0;
     }
 
-    public void cancelFildo(){
+    public void cancelFildo() {
         isFildoOn = false;
     }
 
-    public void activateFildo(){
-       isFildoOn = true;
+    public void activateFildo() {
+        isFildoOn = true;
     }
 
     public boolean isFildoOn() {

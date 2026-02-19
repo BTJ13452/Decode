@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
-import android.graphics.Color;
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.LED;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,9 +13,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
 import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
-import java.security.PermissionCollection;
-
 @TeleOp
+@Disabled
+
 
 public class WebcamBallsCounter extends LinearOpMode {
 
@@ -113,9 +112,9 @@ public class WebcamBallsCounter extends LinearOpMode {
             if (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
                     secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
                     thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK) {
-                rgbController.setGreen();
+                rgbController.setColorGreen();
             } else {
-                rgbController.setOff();
+                rgbController.turnOff();
             }
 
 

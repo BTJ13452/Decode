@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Systems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import static android.os.SystemClock.sleep;
 
@@ -13,24 +12,16 @@ public class Parking {
     final double TICK_PER_CM = ENCODER_RESOLUTION / (2 * Math.PI * RADIOS);
     final double HEIGHT = 45.72; //CM
     final int HEIGHT_IN_TICKS = (int) Math.round(HEIGHT * TICK_PER_CM);
-
     final double MOTOR_POWER_FOR_RAISING = -1;
     final double MOTOR_POWER_FOR_LOWERING = 0;
-//
     final double MOTOR_POWER_FOR_RESET = 0.2;
-//
     final int ACCEPTABLE_HEIGHT_DISTANCE = 1; //CM
     final int TICKS_FOR_LOCK = 40;
     final int TICKS_FOR_CLOSE = 5;
     final int TIME_FOR_RESET = 2000;
-//
-    final int RESET_ERROR = 5   ;
-//
-
-
+    final int RESET_ERROR = 10   ;
 
     boolean isRobotUp;
-
 
     DcMotor rightElevator;
     DcMotor leftElevator;
@@ -61,7 +52,17 @@ public class Parking {
         rightElevator.setDirection(DcMotorSimple.Direction.FORWARD);
         leftElevator.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        closeRobot();
+        closeElevators();
+        rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightElevator.setTargetPosition(TICKS_FOR_CLOSE);
+        leftElevator.setTargetPosition(TICKS_FOR_CLOSE);
+        rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightElevator.setPower(MOTOR_POWER_FOR_RESET);
+        leftElevator.setPower(MOTOR_POWER_FOR_RESET);
     }
 
     public void raiseRobot() {
@@ -90,20 +91,10 @@ public class Parking {
         return (first.getCurrentPosition() - second.getCurrentPosition()) / TICK_PER_CM;
     }
 
-    private void closeRobot() {
+    private void closeElevators() {
         rightElevator.setPower(-MOTOR_POWER_FOR_RESET);
         leftElevator.setPower(-MOTOR_POWER_FOR_RESET);
         sleep(TIME_FOR_RESET);
-        rightElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftElevator.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftElevator.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightElevator.setTargetPosition(TICKS_FOR_CLOSE);
-        leftElevator.setTargetPosition(TICKS_FOR_CLOSE);
-        rightElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightElevator.setPower(MOTOR_POWER_FOR_RESET);
-        leftElevator.setPower(MOTOR_POWER_FOR_RESET);
     }
 
     public void lockRobot() {
@@ -113,7 +104,6 @@ public class Parking {
         leftElevator.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightElevator.setPower(MOTOR_POWER_FOR_RESET);
         leftElevator.setPower(MOTOR_POWER_FOR_RESET);
-
     }
 
     public void releaseRobot() {
@@ -159,10 +149,6 @@ public class Parking {
 
     public boolean isRobotRaised() {
         return isRobotUp;
-    }
-
-    public double getPower() {
-        return rightElevator.getPower();
     }
 
     public void stop() {

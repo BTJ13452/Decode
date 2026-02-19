@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 
 @TeleOp
+@Disabled
+
 
 public class TestDrive extends OpMode {
 
@@ -14,7 +16,7 @@ public class TestDrive extends OpMode {
 
     @Override
     public void init() {
-        drive = new Drive(hardwareMap, -90);
+        drive = new Drive(hardwareMap, -90 , false);
     }
 
     @Override

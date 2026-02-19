@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
@@ -9,19 +10,21 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 
 @TeleOp
+@Disabled
 public class AprilTagAutoAlinment extends OpMode {
 
     Limelight3A limelight;
     Drive drive;
 
-    double kp = 0.002;
+    double kp = 0.02;
     double error = 0;
     double lastError = 0;
-    double goalTx = 8;
+    double goalTx = 0;
     double angleTolerance = 0.2;
-    double kd = 0.0001;
+    double kd = -0.000001;
     double curTime = 0;
     double lastTme = 0;
+    final double MAX_DRIVE_SPEED = 0.5;
 
 
     double forward, strafe, rotate;
@@ -30,7 +33,7 @@ public class AprilTagAutoAlinment extends OpMode {
     @Override
     public void init() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        drive = new Drive(hardwareMap, 0);
+        drive = new Drive(hardwareMap, 0, false);
         limelight.pipelineSwitch(0);
         limelight.start();
         telemetry.addLine("all good fo start");
@@ -46,50 +49,38 @@ public class AprilTagAutoAlinment extends OpMode {
     public void loop() {
         forward = -gamepad1.left_stick_x;
         strafe = gamepad1.left_stick_y;
-        rotate = gamepad1.right_stick_x;
 
         LLResult llResult = limelight.getLatestResult();
         llResult.getTx();
 
 
-        if (gamepad1.b) {
-            if (llResult != null && llResult.isValid()) {
-                error = goalTx - llResult.getTx();
-                if (Math.abs(error) < angleTolerance) {
-                    rotate = 0;
-
-                } else {
-                    double pTerm = error * kp;
-
-                    curTime = getRuntime();
-
-                    double dt = curTime - lastTme;
-                    double dTerm = ((error - lastError) / dt) * kd;
-
-                    rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
-
-                    lastError = error;
-                    lastTme = curTime;
-
-                }
-
+        if (gamepad1.right_bumper && llResult != null && llResult.isValid()) {
+            error = llResult.getTx() - goalTx;
+            if (Math.abs(error) < angleTolerance) {
+                rotate = 0;
             } else {
-                lastTme = getRuntime();
-                lastError = 0;
+                double pTerm = error * kp;
 
+                curTime = getRuntime();
+
+                double dt = curTime - lastTme;
+                double dTerm = ((error - lastError) / dt) * kd;
+
+                rotate = Range.clip(pTerm + dTerm, -MAX_DRIVE_SPEED, MAX_DRIVE_SPEED);
+
+                lastError = error;
+                lastTme = curTime;
             }
-
-
         } else {
             lastError = 0;
             lastTme = getRuntime();
+            rotate = gamepad1.right_stick_x;
         }
+
         drive.drive(forward, strafe, rotate);
 
-        llResult.getTx();
         telemetry.addData("rotate", rotate);
         telemetry.addData("tx", llResult.getTx());
         telemetry.update();
-
     }
 }

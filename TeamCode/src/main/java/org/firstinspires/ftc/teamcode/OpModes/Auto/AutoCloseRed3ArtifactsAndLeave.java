@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import static android.os.SystemClock.sleep;
 
@@ -10,13 +10,13 @@ import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @Autonomous
-public class AutonomousCloseB extends OpMode {
+public class AutoCloseRed3ArtifactsAndLeave extends OpMode {
     Drive drive;
     Intake intake;
     Shooter shooter;
     @Override
     public void init() {
-        drive = new Drive(hardwareMap, 0);
+        drive = new Drive(hardwareMap, 0 , false);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
     }
@@ -29,7 +29,7 @@ public class AutonomousCloseB extends OpMode {
         drive.drive(0, 0, 0);
         intake.shootVolley();
         sleep(5000);
-        drive.drive(-0.7, 0, 0);
+        drive.drive(0.7, 0, 0);
         sleep(1000);
         shooter.setPower(0);
     }

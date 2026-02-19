@@ -1,28 +1,27 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import static android.os.SystemClock.sleep;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorLimelight3A;
+import org.firstinspires.ftc.teamcode.Systems.AutoAline;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Parking;
 import org.firstinspires.ftc.teamcode.Systems.RGBController;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
-
-@TeleOp
 public class BTJTeleOp extends OpMode {
-
+    protected static AutoAline.AllianceColor AllianceColor;
     final int LONG_PRESS_MILLISECONDS = 500;
-    final Double CONTENT_SHOOTER_SPEED = 0.7;
+    final double OFFSET_POWER = 0.1;
+    final double PRESS = 0.5;
+
     double power;
-    boolean isBPressed = false;
+    double forward, strafe, rotate;
 
 
     VoltageSensor voltageSensor;
@@ -31,9 +30,8 @@ public class BTJTeleOp extends OpMode {
     Shooter shooter;
     Parking parking;
     RGBController LEDs;
-    Limelight3A limelight;
-    LLResult llResult;
-
+    AutoAline autoAline;
+    Limelight3A limelight3A;
 
     Thread waitForLongXPress = new Thread(new Runnable() {
         @Override
@@ -42,7 +40,8 @@ public class BTJTeleOp extends OpMode {
             sleep(LONG_PRESS_MILLISECONDS);
             if (!gamepad1.xWasReleased()) {
                 intake.startAll(Intake.Direction.REVERSE);
-                while (gamepad1.x) {}
+                while (gamepad1.x) {
+                }
                 intake.firstStageIntake(Intake.Direction.FORWARD);
                 intake.secondStageTransport(Intake.Direction.REVERSE);
                 intake.thirdStageTransport(Intake.Direction.REVERSE);
@@ -50,49 +49,35 @@ public class BTJTeleOp extends OpMode {
         }
     });
 
-//    Thread ShooterVollyWithLift = new Thread(new Runnable() {
-//        @Override
-//        public void run() {
-//            parking.openALittleBit();
-//            intake.shootVolley();
-//            intake.firstStageIntake(Intake.Direction.STOP);
-//
-//            }
-//    });
+    Thread ShooterVollyWithLift = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            parking.openALittleBit();
+            intake.shootVolley();
+            intake.firstStageIntake(Intake.Direction.STOP);
 
+        }
+    });
 
-    boolean gamepad1RightTriggerWasPressed = false;
 
     @Override
     public void init() {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
-        drive = new Drive(hardwareMap, 0);
+        drive = new Drive(hardwareMap, 0, false);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
         parking = new Parking(hardwareMap);
         LEDs = new RGBController(hardwareMap);
         power = 0;
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(1);
-        limelight.start();
     }
 
     @Override
     public void loop() {
+        forward = -gamepad1.left_stick_x;
+        strafe = gamepad1.left_stick_y;
+        rotate = gamepad1.right_trigger < PRESS ? autoAline.rotationForAlignment(getRuntime(), gamepad1.right_stick_x) : gamepad1.right_stick_x;
 
-        drive.drive(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
-//        if (gamepad1.leftStickButtonWasPressed()) {
-//            if (drive.isFildoOn()) {
-//                drive.cancelFildo();
-//            } else {
-//                drive.resetIMU();
-//                drive.activateFildo();
-//            }
-//        }
-//        if (!shooter.isActive()) {
-//            shooter.setPower(CONTENT_SHOOTER_SPEED);
-//        }
-
+        drive.drive(forward, strafe, rotate);
 
         if (gamepad1.dpadUpWasPressed()) {
             shooter.setPower(shooter.SHOOTER_SPEED_FOUR + shooter.powerOffset);
@@ -112,30 +97,23 @@ public class BTJTeleOp extends OpMode {
             } else {
                 shooter.setPower(shooter.SHOOTER_SPEED_ONE + shooter.powerOffset);
             }
-
-
         }
+
         if (gamepad2.dpadUpWasPressed()) {
-            shooter.powerOffset += 0.1;
+            shooter.powerOffset += OFFSET_POWER;
         }
 
 
         if (gamepad2.dpadRightWasPressed()) {
-            shooter.powerOffset += 0.01;
+            shooter.powerOffset += OFFSET_POWER;
         }
 
         if (gamepad2.dpadDownWasPressed()) {
-            shooter.powerOffset -= 0.1;
+            shooter.powerOffset -= OFFSET_POWER;
         }
 
         if (gamepad2.dpadLeftWasPressed()) {
-            shooter.powerOffset -= 0.01;
-        }
-
-        if (gamepad1.rightStickButtonWasPressed()) {
-            shooter.setPower(0);
-            intake.secondStageTransport(Intake.Direction.REVERSE);
-            intake.thirdStageTransport(Intake.Direction.STOP);
+            shooter.powerOffset -= OFFSET_POWER;
         }
 
         if (gamepad1.xWasPressed()) {
@@ -151,20 +129,6 @@ public class BTJTeleOp extends OpMode {
             waitForLongXPress.interrupt();
             waitForLongXPress.start();
         }
-
-        if (gamepad1.right_trigger > 0.5 && !gamepad1RightTriggerWasPressed && !parking.isRobotRaised()) {
-            gamepad1RightTriggerWasPressed = true;
-
-            if (parking.isRobotLocked()) {
-                parking.releaseRobot();
-            } else {
-                parking.lockRobot();
-            }
-
-        } else if (gamepad1.right_trigger <= 0.5) {
-            gamepad1RightTriggerWasPressed = false;
-        }
-
 
         if (gamepad1.leftBumperWasPressed()) {
             intake.transportArtifactToShooter(Intake.Cell.LEFT);
@@ -183,6 +147,10 @@ public class BTJTeleOp extends OpMode {
             intake.thirdStageTransport(Intake.Direction.STOP);
         }
 
+        if (gamepad1.rightBumperWasReleased() || gamepad1.leftBumperWasReleased()) {
+            intake.thirdStageTransport(Intake.Direction.REVERSE);
+        }
+
         if (gamepad1.yWasPressed()) {
             if (parking.isRobotRaised()) {
                 parking.lowerRobot();
@@ -194,26 +162,14 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad1.bWasPressed()) {
             intake.shootVolley();
-        }
 
-
-//        if (shooter.isActive()) {
-//            updateShooter();
-//        }
-
-        if (gamepad1.aWasPressed()) {
-            if (shooter.isActive()) {
-                shooter.setPower(0);
-            } else {
-                updateShooter();
-            }
         }
 
 
         if (intake.areThreeIn()) {
-            LEDs.setGreen();
+            LEDs.setColorGreen();
         } else {
-            LEDs.setOff();
+            LEDs.turnOff();
         }
 
 
@@ -221,11 +177,12 @@ public class BTJTeleOp extends OpMode {
             parking.stayClosed();
         }
 
+        if (gamepad2.aWasPressed()) {
+            autoAline.switchAlliance();
+        }
+
+
         printTelemetry();
-    }
-
-
-    private void wasBPressed() {
     }
 
     @Override
@@ -234,7 +191,7 @@ public class BTJTeleOp extends OpMode {
             waitForLongXPress.interrupt();
         }
         parking.stop();
-        limelight.stop();
+        autoAline.stop();
         intake.stop();
     }
 
@@ -245,20 +202,4 @@ public class BTJTeleOp extends OpMode {
         telemetry.update();
     }
 
-    public void updateShooter() {
-        llResult = limelight.getLatestResult();
-        for (int i = 0; i < 100; i++) {
-            if (llResult != null && llResult.isValid()) {
-                shooter.setPowerByDistance(llResult.getTa(), voltageSensor.getVoltage());
-                telemetry.addData("shooter power", shooter.getPower());
-                telemetry.addData("ta", llResult.getTa());
-                telemetry.addData("voltage", voltageSensor.getVoltage());
-                telemetry.update();
-                break;
-            }
-        }
-    }
 }
-
-
-

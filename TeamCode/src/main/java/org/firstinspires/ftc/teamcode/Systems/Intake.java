@@ -21,8 +21,8 @@ public class Intake {
         REVERSE,
         STOP;
 
-        public static int getValue(Direction d) {
-            switch (d) {
+        public int getValue() {
+            switch (this) {
                 case FORWARD:
                     return 1;
                 case REVERSE:
@@ -32,7 +32,6 @@ public class Intake {
             }
         }
     }
-
     public enum Cell {
         RIGHT,
         LEFT;
@@ -46,22 +45,21 @@ public class Intake {
     CRServo leftSecondStageTransportServo;
     DcMotor thirdStageTransportMotor;
 
-
     VisionPortal camera;
     PredominantColorProcessor firstCell;
     PredominantColorProcessor secondCell;
     PredominantColorProcessor thirdCell;
-    PredominantColorProcessor thirdCell2;
+
 
     Thread shootVolley = new Thread(new Runnable() {
         @Override
         public void run() {
             transportArtifactToShooter(Cell.RIGHT);
-            sleep(500);
+            sleep(100);
             transportArtifactToShooter(Cell.LEFT);
-            sleep(500);
+            sleep(100);
             startAll(Direction.FORWARD);
-            sleep(1000);
+            sleep(300);
             firstStageIntake(Direction.FORWARD);
             secondStageTransport(Direction.REVERSE);
             thirdStageTransport(Direction.REVERSE);
@@ -77,12 +75,11 @@ public class Intake {
 
         thirdStageTransportMotor = hardwareMap.dcMotor.get("3rd Stage Motor");
 
-        rightFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
-        leftFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
-
+        rightFirstStageIntakeServo.setDirection(CRServo.Direction.FORWARD);
+        leftFirstStageIntakeServo.setDirection(CRServo.Direction.REVERSE);
 
         rightSecondStageTransportServo.setDirection(CRServo.Direction.FORWARD);
-        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE   );
+        leftSecondStageTransportServo.setDirection(CRServo.Direction.REVERSE);
 
         thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -115,12 +112,10 @@ public class Intake {
                 .build();
 
 
-
         camera = new VisionPortal.Builder()
                 .addProcessor(firstCell)
                 .addProcessor(secondCell)
                 .addProcessor(thirdCell)
-
                 .setCameraResolution(new Size(1280, 720))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .build();
@@ -128,16 +123,16 @@ public class Intake {
 
 
     public void firstStageIntake(Direction d) {
-        rightFirstStageIntakeServo.setPower(IN_POWER * Direction.getValue(d));
-        leftFirstStageIntakeServo.setPower(IN_POWER * Direction.getValue(d));
+        rightFirstStageIntakeServo.setPower(IN_POWER * d.getValue());
+        leftFirstStageIntakeServo.setPower(IN_POWER * d.getValue());
     }
 
     public void rightSecondStageTransport(Direction d) {
-        rightSecondStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
+        rightSecondStageTransportServo.setPower(IN_POWER * d.getValue());
     }
 
     public void leftSecondStageTransport(Direction d) {
-        leftSecondStageTransportServo.setPower(IN_POWER * Direction.getValue(d));
+        leftSecondStageTransportServo.setPower(IN_POWER * d.getValue());
     }
 
     public void secondStageTransport(Direction d) {
@@ -146,7 +141,7 @@ public class Intake {
     }
 
     public void thirdStageTransport(Direction d) {
-        thirdStageTransportMotor.setPower(IN_POWER * Direction.getValue(d));
+        thirdStageTransportMotor.setPower(IN_POWER * d.getValue());
     }
 
     public void startAll(Direction d) {
@@ -171,7 +166,6 @@ public class Intake {
         }
         thirdStageTransport(Direction.FORWARD);
     }
-
 
     public void shootVolley() {
         if (shootVolley.isAlive()){

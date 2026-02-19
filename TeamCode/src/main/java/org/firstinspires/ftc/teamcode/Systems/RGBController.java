@@ -7,9 +7,6 @@ public class RGBController {
     Servo ledLeft;
     Servo ledRight;
 
-
-    public static final double RED  = 0.28;
-    public static final double PURPLE = 0.85;
     public static final double GREEN  = 0.45;
 
     public static final double OFF = 0.1;
@@ -18,21 +15,14 @@ public class RGBController {
         ledRight = hardwareMap.get(Servo.class, "Right LED");
     }
 
-    public void setGreen() {
+    public void setColorGreen() {
         ledLeft.setPosition(GREEN);
         ledRight.setPosition(GREEN);
     }
 
-    public  void  setRed() {
-        ledLeft.setPosition(RED);
-        ledRight.setPosition(RED);
-    }
-
-    public  void  setOff() {
+    public  void turnOff() {
         ledLeft.setPosition(OFF);
         ledRight.setPosition(OFF);
     }
-
-
 
 }
