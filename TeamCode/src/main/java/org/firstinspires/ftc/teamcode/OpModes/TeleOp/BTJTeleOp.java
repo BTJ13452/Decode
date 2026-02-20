@@ -18,7 +18,7 @@ public class BTJTeleOp extends OpMode {
     protected static AutoAline.AllianceColor AllianceColor;
     final int LONG_PRESS_MILLISECONDS = 500;
     final double OFFSET_POWER = 0.1;
-    final double PRESS = 0.5;
+    final double PRESS = 0.2;
 
     double power;
     double forward, strafe, rotate;
@@ -31,8 +31,6 @@ public class BTJTeleOp extends OpMode {
     Parking parking;
     RGBController LEDs;
     AutoAline autoAline;
-    Limelight3A limelight3A;
-
     Thread waitForLongXPress = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -73,9 +71,9 @@ public class BTJTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        forward = -gamepad1.left_stick_x;
-        strafe = gamepad1.left_stick_y;
-        rotate = gamepad1.right_trigger < PRESS ? autoAline.rotationForAlignment(getRuntime(), gamepad1.right_stick_x) : gamepad1.right_stick_x;
+        forward = gamepad1.left_stick_x;
+        strafe = -gamepad1.left_stick_y;
+        rotate = gamepad1.right_trigger > PRESS ? autoAline.rotationForAlignment(getRuntime(), gamepad1.right_stick_x) : gamepad1.right_stick_x;
 
         drive.drive(forward, strafe, rotate);
 
@@ -198,6 +196,7 @@ public class BTJTeleOp extends OpMode {
     public void printTelemetry() {
         telemetry.addData("power", shooter.getPower());
         telemetry.addData("voltage", voltageSensor.getVoltage());
+        telemetry.addData("rotate",rotate);
 
         telemetry.update();
     }

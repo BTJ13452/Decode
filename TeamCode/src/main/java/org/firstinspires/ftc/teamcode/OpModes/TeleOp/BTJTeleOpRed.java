@@ -10,6 +10,5 @@ public class BTJTeleOpRed extends BTJTeleOp {
     public void init() {
         super.init();
         autoAline = new AutoAline(hardwareMap, AutoAline.AllianceColor.RED);
-
     }
 }

@@ -43,7 +43,7 @@ public class AutoAline {
         this.allianceColor = allianceColor;
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(allianceColor.pipeLineNumber());
         limelight.start();
     }
 
