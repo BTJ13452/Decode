@@ -31,9 +31,9 @@ public class Shooter {
     }
 
     public  final double SHOOTER_SPEED_ONE = 0.7;
-    public final double SHOOTER_SPEED_TWO = 0.8;
-    public final double SHOOTER_SPEED_THREE = 0.9;
-    public final double SHOOTER_SPEED_FOUR = 1;
+    public final double SHOOTER_SPEED_TWO = 0.75;
+    public final double SHOOTER_SPEED_THREE = 0.8;
+    public final double SHOOTER_SPEED_FOUR = 0.85;
 
 
     DcMotor ShooterMotor;
