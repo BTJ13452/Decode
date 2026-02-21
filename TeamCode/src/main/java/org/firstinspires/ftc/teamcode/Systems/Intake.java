@@ -38,6 +38,9 @@ public class Intake {
     }
 
     final double IN_POWER = 1;
+    final int WAIT_BETWEEN_FIRST_BALL = 100;
+    final int WAIT_BETWEEN_SECOND_BALL = 400;
+    final int WAIT_BETWEEN_THIRD_BALL = 500;
 
     CRServo rightFirstStageIntakeServo;
     CRServo leftFirstStageIntakeServo;
@@ -55,11 +58,11 @@ public class Intake {
         @Override
         public void run() {
             transportArtifactToShooter(Cell.RIGHT);
-            sleep(100);
+            sleep(WAIT_BETWEEN_FIRST_BALL);
             transportArtifactToShooter(Cell.LEFT);
-            sleep(100);
+            sleep(WAIT_BETWEEN_SECOND_BALL);
             startAll(Direction.FORWARD);
-            sleep(300);
+            sleep(WAIT_BETWEEN_THIRD_BALL);
             firstStageIntake(Direction.FORWARD);
             secondStageTransport(Direction.REVERSE);
             thirdStageTransport(Direction.REVERSE);
