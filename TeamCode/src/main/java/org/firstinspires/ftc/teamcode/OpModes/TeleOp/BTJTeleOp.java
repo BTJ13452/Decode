@@ -89,8 +89,8 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad1.dpadDownWasPressed()) {
             shooter.setPower(shooter.SHOOTER_POWERS[shooter.CLOSE_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
-            }
-        if (gamepad1.left_trigger > 0.3){
+        }
+        if (gamepad1.left_trigger > PRESS) {
             shooter.setPower(0);
         }
 
