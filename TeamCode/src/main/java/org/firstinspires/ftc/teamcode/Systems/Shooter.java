@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Shooter {
 
     public final int CLOSE_CELL_IN_POWERS = 0;
@@ -27,8 +30,6 @@ public class Shooter {
 
         ShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
-
-
 
     public void setPower(double power) {
         ShooterMotor.setPower(power);
