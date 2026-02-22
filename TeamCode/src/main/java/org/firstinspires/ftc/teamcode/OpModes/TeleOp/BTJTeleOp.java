@@ -16,7 +16,7 @@ public class BTJTeleOp extends OpMode {
     protected static AutoAline.AllianceColor AllianceColor;
     final int LONG_PRESS_MILLISECONDS = 500;
     final double BIG_OFFSET_POWER = 0.1;
-    final  double SMALL_OFFSET_POWER = 0.01;
+    final double SMALL_OFFSET_POWER = 0.01;
     final double PRESS = 0.2;
     double power;
     double forward, strafe, rotate;
@@ -63,7 +63,7 @@ public class BTJTeleOp extends OpMode {
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
         parking = new Parking(hardwareMap);
-        LEDs = new RGBController(hardwareMap);
+        LEDs =    new RGBController(hardwareMap);
         power = 0;
     }
 
@@ -97,7 +97,7 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad2.dpadUpWasPressed()) {
             shooter.powerOffset += BIG_OFFSET_POWER;
-            }
+        }
 
 
         if (gamepad2.dpadDownWasPressed()) {
@@ -154,21 +154,10 @@ public class BTJTeleOp extends OpMode {
                 parking.raiseRobot();
             }
         }
-
-
         if (gamepad1.bWasPressed()) {
             intake.shootVolley();
 
         }
-
-
-        if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
-            LEDs.setColorGreen();
-        } else if(!intake.areThreeIn()  && !intake.areThreeIn() && !intake.areThreeIn()  && !intake.areThreeIn()){
-            LEDs.turnOff();
-        }
-
-
         if (!parking.isRobotRaised() && !intake.isShootVolleyAlive()) {
             parking.stayClosed();
         }
@@ -182,7 +171,7 @@ public class BTJTeleOp extends OpMode {
 
         }
 
- 
+
         if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
             LEDs.setColorGreen();
         } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()) {
@@ -206,7 +195,7 @@ public class BTJTeleOp extends OpMode {
     public void printTelemetry() {
         telemetry.addData("power", shooter.getPower());
         telemetry.addData("voltage", voltageSensor.getVoltage());
-        telemetry.addData("rotate",rotate);
+        telemetry.addData("rotate", rotate);
 
         telemetry.update();
     }
