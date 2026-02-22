@@ -38,9 +38,9 @@ public class Intake {
     }
 
     final double IN_POWER = 1;
-    final int WAIT_BETWEEN_FIRST_BALL = 180;
-    final int WAIT_BETWEEN_SECOND_BALL = 270;
-    final int WAIT_BETWEEN_THIRD_BALL = 470;
+    final int WAIT_BETWEEN_FIRST_BALL = 200;
+    final int WAIT_BETWEEN_SECOND_BALL = 300;
+    final int WAIT_BETWEEN_THIRD_BALL = 500;
 
     CRServo rightFirstStageIntakeServo;
     CRServo leftFirstStageIntakeServo;

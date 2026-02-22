@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.OpModes.TeleOp;
 
 import static android.os.SystemClock.sleep;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -17,9 +15,9 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 public class BTJTeleOp extends OpMode {
     protected static AutoAline.AllianceColor AllianceColor;
     final int LONG_PRESS_MILLISECONDS = 500;
-    final double OFFSET_POWER = 0.1;
+    final double BIG_OFFSET_POWER = 0.1;
+    final  double SMALL_OFFSET_POWER = 0.01;
     final double PRESS = 0.2;
-
     double power;
     double forward, strafe, rotate;
 
@@ -78,40 +76,40 @@ public class BTJTeleOp extends OpMode {
         drive.drive(forward, strafe, rotate);
 
         if (gamepad1.dpadUpWasPressed()) {
-            shooter.setPower(shooter.SHOOTER_SPEED_FOUR + shooter.powerOffset);
+            shooter.setPower(shooter.SHOOTER_POWERS[shooter.FAR_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
         }
 
         if (gamepad1.dpadRightWasPressed()) {
-            shooter.setPower(shooter.SHOOTER_SPEED_THREE + shooter.powerOffset);
+            shooter.setPower(shooter.SHOOTER_POWERS[shooter.MID_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
         }
 
         if (gamepad1.dpadLeftWasPressed()) {
-            shooter.setPower(shooter.SHOOTER_SPEED_TWO + shooter.powerOffset);
+            shooter.setPower(shooter.SHOOTER_POWERS[shooter.FAR_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
         }
 
         if (gamepad1.dpadDownWasPressed()) {
-            if (shooter.getPower() == shooter.SHOOTER_SPEED_ONE) {
-                shooter.setPower(0);
-            } else {
-                shooter.setPower(shooter.SHOOTER_SPEED_ONE + shooter.powerOffset);
+            shooter.setPower(shooter.SHOOTER_POWERS[shooter.CLOSE_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
             }
+        if (gamepad1.left_trigger > 0.3){
+            shooter.setPower(0);
         }
+
 
         if (gamepad2.dpadUpWasPressed()) {
-            shooter.powerOffset += OFFSET_POWER;
+            shooter.powerOffset += BIG_OFFSET_POWER;
         }
 
-
-        if (gamepad2.dpadRightWasPressed()) {
-            shooter.powerOffset += OFFSET_POWER;
-        }
 
         if (gamepad2.dpadDownWasPressed()) {
-            shooter.powerOffset -= OFFSET_POWER;
+            shooter.powerOffset -= BIG_OFFSET_POWER;
+        }
+
+        if (gamepad2.dpadRightWasPressed()) {
+            shooter.powerOffset += SMALL_OFFSET_POWER;
         }
 
         if (gamepad2.dpadLeftWasPressed()) {
-            shooter.powerOffset -= OFFSET_POWER;
+            shooter.powerOffset -= SMALL_OFFSET_POWER;
         }
 
         if (gamepad1.xWasPressed()) {
