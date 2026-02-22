@@ -92,7 +92,10 @@ public class Intake {
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.BLACK
+                        PredominantColorProcessor.Swatch.BLACK,
+                        PredominantColorProcessor.Swatch.WHITE,
+                        PredominantColorProcessor.Swatch.RED,
+                        PredominantColorProcessor.Swatch.BLUE
                 )
                 .build();
 
@@ -101,16 +104,24 @@ public class Intake {
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.BLACK
+                        PredominantColorProcessor.Swatch.BLACK,
+                        PredominantColorProcessor.Swatch.WHITE,
+                        PredominantColorProcessor.Swatch.RED,
+                        PredominantColorProcessor.Swatch.BLUE
                 )
                 .build();
 
         thirdCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.2, 0.15, -0.05, 0))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.17, 0.135, -0.1, 0))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
-                        PredominantColorProcessor.Swatch.BLACK
+                        PredominantColorProcessor.Swatch.BLACK,
+                        PredominantColorProcessor.Swatch.WHITE,
+                        PredominantColorProcessor.Swatch.RED,
+                        PredominantColorProcessor.Swatch.BLUE
+
+
                 )
                 .build();
 
@@ -195,9 +206,12 @@ public class Intake {
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
         PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
 
-        return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
-                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
-                thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+        return (firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
+                firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE &&
+                secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
+                secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE &&
+                thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
+                thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE);
     }
 
     public void stop(){

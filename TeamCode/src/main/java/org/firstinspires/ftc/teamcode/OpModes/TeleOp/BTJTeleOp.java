@@ -97,7 +97,7 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad2.dpadUpWasPressed()) {
             shooter.powerOffset += BIG_OFFSET_POWER;
-        }
+            }
 
 
         if (gamepad2.dpadDownWasPressed()) {
@@ -162,9 +162,9 @@ public class BTJTeleOp extends OpMode {
         }
 
 
-        if (intake.areThreeIn()) {
+        if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
             LEDs.setColorGreen();
-        } else {
+        } else if(!intake.areThreeIn()  && !intake.areThreeIn() && !intake.areThreeIn()  && !intake.areThreeIn()){
             LEDs.turnOff();
         }
 
