@@ -177,6 +177,18 @@ public class BTJTeleOp extends OpMode {
             autoAline.switchAlliance();
         }
 
+        if (gamepad2.bWasPressed()) {
+            shooter.setPower(0);
+
+        }
+
+ 
+        if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
+            LEDs.setColorGreen();
+        } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()) {
+            LEDs.turnOff();
+        }
+
 
         printTelemetry();
     }
