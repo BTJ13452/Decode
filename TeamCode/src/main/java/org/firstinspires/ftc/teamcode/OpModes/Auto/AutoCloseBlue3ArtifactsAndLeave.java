@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 import static android.os.SystemClock.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Systems.Drive;
@@ -10,6 +11,8 @@ import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @Autonomous
+@Disabled
+
 public class AutoCloseBlue3ArtifactsAndLeave extends OpMode {
     Drive drive;
     Intake intake;
@@ -21,6 +24,7 @@ public class AutoCloseBlue3ArtifactsAndLeave extends OpMode {
         shooter = new Shooter(hardwareMap);
     }
     @Override
+
     public void start() {
         shooter.setPower(0.7);
         sleep(7000);

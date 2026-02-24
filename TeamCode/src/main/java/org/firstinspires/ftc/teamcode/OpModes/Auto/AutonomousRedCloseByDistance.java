@@ -46,7 +46,7 @@
             shooter.setPower(0.7);
             sleep(500);
             drive.drive(0, -0.6, 0);
-            while (pinpoint.getPosX(DistanceUnit.CM) > -115) {
+            while (pinpoint.getPosX(DistanceUnit.CM) < -115) {
                 pinpoint.update();
                 telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
                 telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -57,8 +57,6 @@
             sleep(1000);
             intake.shootVolley();
             sleep(2500);
-            pinpoint.resetPosAndIMU();
-            sleep(300);
             drive.drive(0, 0, 0.2);
             while (pinpoint.getHeading(AngleUnit.DEGREES) > -42) {
                 pinpoint.update();
@@ -95,7 +93,7 @@
             sleep(300);
             drive.drive(0, 0, -0.2);
             shooter.setPower(0.4);
-            while (pinpoint.getHeading(AngleUnit.DEGREES) <75) {
+            while (pinpoint.getHeading(AngleUnit.DEGREES) < 75 ) {
                 pinpoint.update();
                 telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
                 telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -104,10 +102,9 @@
             }
             drive.drive(0, 0, 0);
             sleep(500);
+            pinpoint.resetPosAndIMU();
             intake.shootVolley();
             sleep(2500);
-            pinpoint.resetPosAndIMU();
-            sleep(300);
             drive.drive(0, 0, 0.2);
             while (pinpoint.getHeading(AngleUnit.DEGREES) > -50) {
                 pinpoint.update();

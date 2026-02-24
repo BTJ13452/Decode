@@ -13,9 +13,9 @@ public class Shooter {
     public final int MID_CELL_IN_POWERS = 1;
     public final int FAR_CELL_IN_POWERS = 2;
     public final double[][] SHOOTER_POWERS = {
-            {0.74, 0.69, 0.65, 0.61},   // CLOSE
-            {0.83, 0.78, 0.74, 0.7},   // MID
-            {0.940, 0.890, 0.860, 0.830}    // FAR
+            {0.74, 0.69,0.67, 0.65, 0.61},   // CLOSE
+            {0.83, 0.81,0.78, 0.73, 0.7},   // MID
+            {0.940, 0.890,0.87, 0.860, 0.830}    // FAR
     };
 
 
@@ -43,10 +43,11 @@ public class Shooter {
 
         if (Double.isNaN(voltage)) return 0;
 
-        if (voltage <= 11) return 0;
+        if (voltage <= 11.5) return 0;
         if (voltage <= 12) return 1;
-        if (voltage <= 13) return 2;
+        if(voltage <= 12.5) return 2;
+        if (voltage <= 13) return 3;
 
-        return 3;
+        return 4;
     }
 }

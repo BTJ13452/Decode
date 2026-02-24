@@ -92,7 +92,7 @@ public class AutonomousRedFarByDistance extends OpMode {
         sleep(500);
         drive.drive(0, 0, -0.2);
         shooter.setPower(0.4);
-        while (pinpoint.getHeading(AngleUnit.DEGREES) < 98) {
+        while (pinpoint.getHeading(AngleUnit.DEGREES) < 95) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
