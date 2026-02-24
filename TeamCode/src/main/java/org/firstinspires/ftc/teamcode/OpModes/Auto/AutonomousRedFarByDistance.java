@@ -9,12 +9,11 @@ import static android.os.SystemClock.sleep;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Systems.AutoAline;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
-    @Autonomous
-public class AutonomousBlueFarByDistance extends OpMode {
+@Autonomous
+public class AutonomousRedFarByDistance extends OpMode {
     Drive drive;
     GoBildaPinpointDriver pinpoint;
     Intake intake;
@@ -48,7 +47,7 @@ public class AutonomousBlueFarByDistance extends OpMode {
         intake.shootVolley();
         sleep(2000);
         drive.drive(0,0.4,0);
-        while (pinpoint.getPosX(DistanceUnit.CM) < 60) {
+        while (pinpoint.getPosX(DistanceUnit.CM) < 65) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -57,15 +56,15 @@ public class AutonomousBlueFarByDistance extends OpMode {
         drive.drive(0,0,0);
         pinpoint.resetPosAndIMU();
         sleep(500);
-        drive.drive(0,0,-0.2);
-        while (pinpoint.getHeading(AngleUnit.DEGREES) < 57) {
+        drive.drive(0, 0, 0.2);
+        while (pinpoint.getHeading(AngleUnit.DEGREES) > -80) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
             telemetry.addData("R=",pinpoint.getHeading(AngleUnit.DEGREES));
             telemetry.update();
         }
-        drive.drive(0,0,0);
+        drive.drive(0, 0, 0);
         pinpoint.resetPosAndIMU();
         sleep(500);
         intake.firstStageIntake(Intake.Direction.FORWARD);
@@ -91,9 +90,9 @@ public class AutonomousBlueFarByDistance extends OpMode {
         drive.drive(0, 0, 0);
         pinpoint.resetPosAndIMU();
         sleep(500);
-        drive.drive(0, 0, 0.2);
-        shooter.setPower(0.2);
-        while (pinpoint.getHeading(AngleUnit.DEGREES) > -35) {
+        drive.drive(0, 0, -0.2);
+        shooter.setPower(0.4);
+        while (pinpoint.getHeading(AngleUnit.DEGREES) < 98) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -119,7 +118,7 @@ public class AutonomousBlueFarByDistance extends OpMode {
         drive.drive(0,0.4,0);
         sleep(1000);
         drive.drive(0,0,0);
-       }
+    }
 }
 //       drive.drive(0,0.3,0);
 //        while (pinpoint.getPosX(DistanceUnit.CM) < 50){
