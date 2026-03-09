@@ -18,6 +18,8 @@ public class AutonomousFarRedBySeconds extends OpMode {
     Shooter shooter;
 
     @Override
+
+
     public void init() {
         drive = new Drive(hardwareMap, 0, false);
         intake = new Intake(hardwareMap);

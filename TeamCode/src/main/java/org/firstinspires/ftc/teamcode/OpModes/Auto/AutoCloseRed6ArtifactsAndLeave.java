@@ -44,6 +44,7 @@ public class AutoCloseRed6ArtifactsAndLeave extends OpMode {
         sleep(170);
         drive.drive(0, 0, 0);
         sleep(500);
+
         intake.firstStageIntake(Intake.Direction.FORWARD);
         intake.secondStageTransport(Intake.Direction.REVERSE);
         intake.thirdStageTransport(Intake.Direction.REVERSE);
