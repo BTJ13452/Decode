@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @TeleOp
 @Disabled
-
 public class TestShooter extends OpMode {
 
 
@@ -67,14 +66,11 @@ public class TestShooter extends OpMode {
         }
 
 
-        LLResult llResult = limelight.getLatestResult();
 
-        if (llResult != null && llResult.isValid()) {
-            telemetry.addData("TA ", llResult.getTa());
-            telemetry.addData("Shooter speed", shooter.getPower());
-            telemetry.addData("voltage", voltageSensor.getVoltage());
+            telemetry.addData("Shooter Speed", shooter.getPower());
+            telemetry.addData("VOLTAGE", voltageSensor.getVoltage());
             telemetry.update();
-        }
+
 
 
 
