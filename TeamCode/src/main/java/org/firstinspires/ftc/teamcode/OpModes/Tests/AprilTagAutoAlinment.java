@@ -21,10 +21,10 @@ public class AprilTagAutoAlinment extends OpMode {
     double lastError = 0;
     double goalTx = 0;
     double angleTolerance = 0.2;
-    double kd = -0.000001;
+    double kd = -0.00001;
     double curTime = 0;
     double lastTme = 0;
-    final double MAX_DRIVE_SPEED = 0.5;
+    final double MAX_DRIVE_SPEED = 0.4;
 
 
     double forward, strafe, rotate;
@@ -34,7 +34,7 @@ public class AprilTagAutoAlinment extends OpMode {
     public void init() {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         drive = new Drive(hardwareMap, 0, false);
-        limelight.pipelineSwitch(0);
+        limelight.pipelineSwitch(2);
         limelight.start();
         telemetry.addLine("all good fo start");
     }
