@@ -17,9 +17,13 @@ public class BTJTeleOp extends OpMode {
     final int LONG_PRESS_MILLISECONDS = 500;
     final double BIG_OFFSET_POWER = 0.1;
     final double SMALL_OFFSET_POWER = 0.01;
-    final double PRESS = 0.2;
+    final double PRESS = 0.1;
+    final int WAIT_BETWEEN_UPDATE_SHOOTER_CLOSE = 2000;
+    final int WAIT_BETWEEN_UPDATE_SHOOTER_MID = 1000;
     double power;
     double forward, strafe, rotate;
+    boolean ShootingFromClose = false;
+    boolean ShootingFromFar = false;
 
 
     VoltageSensor voltageSensor;
@@ -44,15 +48,24 @@ public class BTJTeleOp extends OpMode {
             }
         }
     });
-
-    Thread ShooterVollyWithLift = new Thread(new Runnable() {
-        @Override
+    Thread UpdateShooterFromClose = new Thread(new Runnable() {
         public void run() {
-            parking.openALittleBit();
-            intake.shootVolley();
-            intake.firstStageIntake(Intake.Direction.STOP);
+            synchronized (shooter) {
+                shooter.setPower(shooter.SHOOTER_POWERS[shooter.CLOSE_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
+                sleep(WAIT_BETWEEN_UPDATE_SHOOTER_CLOSE);
+
+            }
 
         }
+    });
+    Thread UpdateShooterFromMID = new Thread(new Runnable() {
+        public void run() {
+            synchronized (shooter) {
+                shooter.setPower(shooter.SHOOTER_POWERS[shooter.MID_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
+                sleep(WAIT_BETWEEN_UPDATE_SHOOTER_MID);
+            }
+        }
+
     });
 
 
@@ -61,9 +74,10 @@ public class BTJTeleOp extends OpMode {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         drive = new Drive(hardwareMap, 0, false);
         intake = new Intake(hardwareMap);
+
         shooter = new Shooter(hardwareMap);
         parking = new Parking(hardwareMap);
-        LEDs =    new RGBController(hardwareMap);
+        LEDs = new RGBController(hardwareMap);
         power = 0;
     }
 
@@ -146,17 +160,40 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.rightBumperWasReleased() || gamepad1.leftBumperWasReleased()) {
             intake.thirdStageTransport(Intake.Direction.REVERSE);
         }
+        if (gamepad1.leftStickButtonWasPressed()) {
+            ShootingFromFar = false;
+            ShootingFromClose = true;
+
+
+        }
+        if (gamepad1.rightStickButtonWasPressed()) {
+            ShootingFromClose = false;
+            ShootingFromFar = true;
+
+
+        }
+        if (ShootingFromClose && !UpdateShooterFromMID.isAlive() && !UpdateShooterFromClose.isAlive()) {
+            UpdateShooterFromClose.start();
+
+        }
+        if (ShootingFromFar && !UpdateShooterFromClose.isAlive() && !UpdateShooterFromMID.isAlive()) {
+            UpdateShooterFromMID.start();
+        }
 
         if (gamepad1.yWasPressed()) {
             if (parking.isRobotRaised()) {
                 parking.lowerRobot();
             } else {
                 parking.raiseRobot();
+                ShootingFromClose = false;
+                ShootingFromFar = false;
+                shooter.setPower(0);
+                intake.stop();
+
             }
         }
         if (gamepad1.bWasPressed()) {
             intake.shootVolley();
-
         }
         if (!parking.isRobotRaised() && !intake.isShootVolleyAlive()) {
             parking.stayClosed();
