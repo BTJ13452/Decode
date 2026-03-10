@@ -37,7 +37,7 @@ public class AutoAline {
     double angleTolerance = 0.2;
     double kd = -0.000001;
     double lastTime = 0;
-    final double MAX_DRIVE_SPEED = 0.5;
+    final double MAX_DRIVE_SPEED = 0.4;
 
     public AutoAline(HardwareMap hardwareMap, AllianceColor allianceColor) {
         this.allianceColor = allianceColor;
