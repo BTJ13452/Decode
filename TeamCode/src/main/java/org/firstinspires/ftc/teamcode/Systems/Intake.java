@@ -110,7 +110,7 @@ public class Intake {
                 .build();
 
         secondCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(0.5, -0.55, 0.65, -0.9))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(0.5, -0.52, 0.63, -0.9))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -248,8 +248,8 @@ public class Intake {
         PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
         PredominantColorProcessor.Result thirdCellResult2 = thirdCell2.getAnalysis();
 
-        return (!(firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
+        return ((firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.ARTIFACT_GREEN &&
+                firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
                 (secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
                         secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
                 (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
@@ -258,7 +258,7 @@ public class Intake {
                         thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
 
     }
-    public boolean areBallStuckL() {
+    public boolean areBallStuckL(){
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
         PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
@@ -266,8 +266,8 @@ public class Intake {
 
         return ((firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
                 firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                !(secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
+                (secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.ARTIFACT_GREEN &&
+                        secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
                 (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
                         thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
                         thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||

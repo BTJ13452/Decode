@@ -210,8 +210,8 @@ public class BTJTeleOp extends OpMode {
 
         if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
             LEDs.setColorGreen();
-        } else if ((intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL())
-         && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL())){
+        } else if (!intake.areThreeIn() && !intake.areThreeIn() && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL())
+         && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL() && !intake.areThreeIn())){
             LEDs.setColorOrange();
         } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()
                 && !intake.areThreeIn() && !intake.areThreeIn()) {
