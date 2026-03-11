@@ -205,16 +205,18 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad2.bWasPressed()) {
             shooter.setPower(0);
-
         }
 
 
         if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
             LEDs.setColorGreen();
-        } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()) {
+        } else if ((intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL())
+         && (intake.areBallStuckR() || intake.areBallStuckL()) && (intake.areBallStuckR() || intake.areBallStuckL())){
+            LEDs.setColorOrange();
+        } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()
+                && !intake.areThreeIn() && !intake.areThreeIn()) {
             LEDs.turnOff();
         }
-
 
         printTelemetry();
     }
