@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -13,16 +14,17 @@ import org.firstinspires.ftc.teamcode.Systems.Drive;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 @Autonomous
+@Disabled
 public class AutonomousRedFarByDistance extends BTJAuto {
     public void runPath() {
         shooter.setPower(1);
         sleep(5000);
-        shooter.setPower(shooter.SHOOTER_POWERS[shooter.MID_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
+        shooter.setPower(0.85);
         sleep(1000);
         intake.shootVolley();
         sleep(2000);
         drive.drive(0,0.4,0);
-        while (pinpoint.getPosX(DistanceUnit.CM) < 60) {
+        while (pinpoint.getPosX(DistanceUnit.CM) < 55) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -46,7 +48,7 @@ public class AutonomousRedFarByDistance extends BTJAuto {
         intake.secondStageTransport(Intake.Direction.REVERSE);
         intake.thirdStageTransport(Intake.Direction.REVERSE);
         drive.drive(0,0.4,0);
-        while (pinpoint.getPosX(DistanceUnit.CM) < 95) {
+        while (pinpoint.getPosX(DistanceUnit.CM) < 60) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
@@ -56,7 +58,7 @@ public class AutonomousRedFarByDistance extends BTJAuto {
         pinpoint.resetPosAndIMU();
         sleep(100);
         drive.drive(0,-0.4,0);
-        while (pinpoint.getPosX(DistanceUnit.CM) > -85) {
+        while (pinpoint.getPosX(DistanceUnit.CM) > -65) {
             pinpoint.update();
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
