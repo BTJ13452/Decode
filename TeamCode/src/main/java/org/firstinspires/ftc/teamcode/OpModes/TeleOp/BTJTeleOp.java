@@ -19,7 +19,7 @@ public class BTJTeleOp extends OpMode {
     final double SMALL_OFFSET_POWER = 0.01;
     final double PRESS = 0.1;
     final int WAIT_BETWEEN_UPDATE_SHOOTER_CLOSE = 2000;
-    final int WAIT_BETWEEN_UPDATE_SHOOTER_MID = 1000;
+    final int WAIT_BETWEEN_UPDATE_SHOOTER_MID = 1;
     double power;
     double forward, strafe, rotate;
     boolean ShootingFromClose = false;
@@ -40,8 +40,6 @@ public class BTJTeleOp extends OpMode {
             sleep(LONG_PRESS_MILLISECONDS);
             if (!gamepad1.xWasReleased()) {
                 intake.startAll(Intake.Direction.REVERSE);
-                while (gamepad1.x) {
-                }
                 intake.firstStageIntake(Intake.Direction.FORWARD);
                 intake.secondStageTransport(Intake.Direction.REVERSE);
                 intake.thirdStageTransport(Intake.Direction.REVERSE);
@@ -51,7 +49,11 @@ public class BTJTeleOp extends OpMode {
     Thread UpdateShooterFromClose = new Thread(new Runnable() {
         public void run() {
             synchronized (shooter) {
-                shooter.setPower(shooter.SHOOTER_POWERS[shooter.CLOSE_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
+                shooter.setVelocity(Shooter.SPEED_FROM_CLOSE);
+                if (shooter.getVelocity() >= Shooter.SPEED_FROM_CLOSE + Shooter.error) {
+                    shooter.setVelocity(Shooter.kfErrorClose);
+                    sleep(Shooter.timeBetweenUpdates);
+                } else shooter.setVelocity(Shooter.SPEED_FROM_CLOSE);
                 sleep(WAIT_BETWEEN_UPDATE_SHOOTER_CLOSE);
 
             }
@@ -61,7 +63,12 @@ public class BTJTeleOp extends OpMode {
     Thread UpdateShooterFromMID = new Thread(new Runnable() {
         public void run() {
             synchronized (shooter) {
-                shooter.setPower(shooter.SHOOTER_POWERS[shooter.MID_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
+                shooter.setVelocity(Shooter.SPEED_FROM_MID);
+                if (shooter.getVelocity() >= Shooter.SPEED_FROM_MID + Shooter.error) {
+                    shooter.setVelocity(Shooter.kfErrorMid);
+                    sleep(Shooter.timeBetweenUpdates);
+                } else shooter.setVelocity(Shooter.SPEED_FROM_MID);
+
                 sleep(WAIT_BETWEEN_UPDATE_SHOOTER_MID);
             }
         }
@@ -89,9 +96,8 @@ public class BTJTeleOp extends OpMode {
 
         drive.drive(forward, strafe, rotate);
 
-        if (gamepad1.dpadUpWasPressed()) {
-            shooter.setPower(shooter.SHOOTER_POWERS[shooter.FAR_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
-        }
+        shooter.RunByPidf();
+
 
         if (gamepad1.dpadRightWasPressed()) {
             shooter.setPower(shooter.SHOOTER_POWERS[shooter.MID_CELL_IN_POWERS][Shooter.voltageFindRange(voltageSensor.getVoltage())] + shooter.powerOffset);
@@ -195,6 +201,9 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.bWasPressed()) {
             intake.shootVolley();
         }
+        if (gamepad1.aWasPressed()) {
+            intake.shootVolleyMid();
+        }
         if (!parking.isRobotRaised() && !intake.isShootVolleyAlive()) {
             parking.stayClosed();
         }
@@ -204,7 +213,7 @@ public class BTJTeleOp extends OpMode {
         }
 
         if (gamepad2.bWasPressed()) {
-            shooter.setPower(0);
+            shooter.setVelocity(Shooter.SPEED_FROM_MID);
 
         }
 
@@ -214,7 +223,6 @@ public class BTJTeleOp extends OpMode {
         } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()) {
             LEDs.turnOff();
         }
-
 
         printTelemetry();
     }
@@ -230,9 +238,9 @@ public class BTJTeleOp extends OpMode {
     }
 
     public void printTelemetry() {
-        telemetry.addData("power", shooter.getPower());
         telemetry.addData("voltage", voltageSensor.getVoltage());
         telemetry.addData("rotate", rotate);
+        telemetry.addData("velocity", shooter.getVelocity());
 
         telemetry.update();
     }

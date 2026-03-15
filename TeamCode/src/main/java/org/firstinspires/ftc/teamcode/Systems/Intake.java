@@ -18,6 +18,9 @@ import kotlin.jvm.Synchronized;
 
 public class Intake {
 
+
+
+
     public enum Direction {
         FORWARD,
         REVERSE,
@@ -44,9 +47,9 @@ public class Intake {
     final int WAIT_BETWEEN_FIRST_BALL = 200;
     final int WAIT_BETWEEN_SECOND_BALL = 300;
     final int WAIT_BETWEEN_THIRD_BALL = 500;
-    final int WAIT_BETWEEN_FIRST_BALL_MID = 300;
-    final int WAIT_BETWEEN_SECOND_BALL_MID = 400;
-    final int WAIT_BETWEEN_THIRD_BALL_MID = 1000;
+    final int WAIT_BETWEEN_FIRST_BALL_MID = 800;
+    final int WAIT_BETWEEN_SECOND_BALL_MID = 1200;
+    final int WAIT_BETWEEN_THIRD_BALL_MID = 500;
 
     CRServo rightFirstStageIntakeServo;
     CRServo leftFirstStageIntakeServo;
@@ -72,6 +75,23 @@ public class Intake {
                 sleep(WAIT_BETWEEN_SECOND_BALL);
                 startAll(Direction.FORWARD);
                 sleep(WAIT_BETWEEN_THIRD_BALL);
+                firstStageIntake(Direction.FORWARD);
+                secondStageTransport(Direction.REVERSE);
+                thirdStageTransport(Direction.REVERSE);
+            }
+        }
+    });
+    public Thread shootVolleyMid = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            synchronized (this) {
+
+                transportArtifactToShooter(Cell.RIGHT);
+                sleep(WAIT_BETWEEN_FIRST_BALL_MID);
+                transportArtifactToShooter(Cell.LEFT);
+                sleep(WAIT_BETWEEN_SECOND_BALL_MID);
+                startAll(Direction.FORWARD);
+                sleep(WAIT_BETWEEN_THIRD_BALL_MID);
                 firstStageIntake(Direction.FORWARD);
                 secondStageTransport(Direction.REVERSE);
                 thirdStageTransport(Direction.REVERSE);
@@ -198,8 +218,7 @@ public class Intake {
         if (cell == Cell.RIGHT) {
             leftSecondStageTransport(Direction.REVERSE);
             rightSecondStageTransport(Direction.FORWARD);
-        }
-        else {
+        } else {
             rightSecondStageTransport(Direction.REVERSE);
             leftSecondStageTransport(Direction.FORWARD);
         }
@@ -207,10 +226,16 @@ public class Intake {
     }
 
     public void shootVolley() {
-        if (shootVolley.isAlive()){
+        if (shootVolley.isAlive()) {
             shootVolley.interrupt();
+        } else {
+            shootVolley.start();
         }
-        else{
+    }
+    public void shootVolleyMid() {
+        if (shootVolley.isAlive()) {
+            shootVolley.interrupt();
+        } else {
             shootVolley.start();
         }
     }
@@ -236,12 +261,13 @@ public class Intake {
         return ((firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
                 firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
                 (secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
+                        secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
                 (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
+                        thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
+                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
+                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
     }
+
     public boolean areBallStuckR() {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
@@ -258,6 +284,7 @@ public class Intake {
                         thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
 
     }
+
     public boolean areBallStuckL() {
         PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
         PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
@@ -274,9 +301,10 @@ public class Intake {
                         thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
 
     }
-    public void stop(){
-        if (shootVolley.isAlive()){
-         shootVolley.interrupt();
+
+    public void stop() {
+        if (shootVolley.isAlive()) {
+            shootVolley.interrupt();
         }
         camera.close();
 

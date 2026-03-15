@@ -1,30 +1,40 @@
 package org.firstinspires.ftc.teamcode.Systems;
 
-import static android.os.SystemClock.sleep;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Shooter {
 
     public final int CLOSE_CELL_IN_POWERS = 0;
     public final int MID_CELL_IN_POWERS = 1;
     public final int FAR_CELL_IN_POWERS = 2;
+    public static double error = 70;
+    public static double kfErrorMid = 20;
+    public static double kfErrorClose = 5;
+    public static double kp = 0.00001;
+    public static double kd = 0.0001;
+    public static double kf = 700;
+    public static long timeBetweenUpdates = 20;
+
+
+    public final static double SPEED_FROM_MID = 1450;
+    public final static double SPEED_FROM_CLOSE = 1270;
+
     public final double[][] SHOOTER_POWERS = {
-            {0.8, 0.78, 0.72, 0.65, 0.63, 0.6, 0.68, 0.6},   // CLOSE
-            {0.84, 0.82, 0.79, 0.7, 0.675, 0.68, 0.67, 0.665},   // MID
-            {0.98, 0.98, 0.98, 0.940, 0.890, 0.87, 0.860, 0.7}    // FAR
-//          10.5v 11v 11.5V, 12V, ,12.5V, 13V, 13+
+            {0.8, 0.77, 0.71, 0.65, 0.63, 0.62, 0.61, 0.6},   // קרוב
+
+            {0.85, 0.82, 0.76, 0.7, 0.69, 0.69, 0.67, 0.66},   // רחוק
+
+            {0.98, 0.98, 0.98, 0.940, 0.890, 0.87, 0.860, 0.7}    // צמוד לקיר
+//
+//           10.5v 11v 11.5V, 12V, ,12.5V, 13V, 13+
     };
 
 
-    DcMotor ShooterMotor;
+    public DcMotorEx shooterMotor;
     VoltageSensor voltageSensor;
 
     public double powerOffset = 0;
@@ -32,22 +42,33 @@ public class Shooter {
 
     public Shooter(HardwareMap hardwareMap) {
 
-        ShooterMotor = hardwareMap.dcMotor.get("shooter Motor");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter Motor");
+        shooterMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        shooterMotor.setDirection(DcMotorEx.Direction.REVERSE);
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(kp, 0.0, kd, kf);
+        shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-
-        ShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
+
 
     public void setPower(double power) {
-        ShooterMotor.setPower(power);
+        shooterMotor.setPower(power);
     }
 
-    public double getPower() {
-        return ShooterMotor.getPower();
+    public void setVelocity(double targetV) {
+        shooterMotor.setVelocity(targetV);
     }
 
+    public double getVelocity() {
+        return shooterMotor.getVelocity();
+    }
 
+    public void RunByPidf() {
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(kp, 0.0, kd, kf);
+        shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+
+    }
 
 
     public static int voltageFindRange(double voltage) {
@@ -63,5 +84,9 @@ public class Shooter {
 
         return 7;
     }
+
+
 }
+
+
 
