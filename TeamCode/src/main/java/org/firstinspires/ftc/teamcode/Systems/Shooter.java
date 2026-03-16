@@ -11,17 +11,16 @@ public class Shooter {
     public final int CLOSE_CELL_IN_POWERS = 0;
     public final int MID_CELL_IN_POWERS = 1;
     public final int FAR_CELL_IN_POWERS = 2;
-    public static double error = 70;
-    public static double kfErrorMid = 20;
-    public static double kfErrorClose = 5;
-    public static double kp = 0.00001;
-    public static double kd = 0.0001;
-    public static double kf = 700;
-    public static long timeBetweenUpdates = 20;
+    public static double error = 1;
+    public static double kfError = 20;
+    public static double kp = 0.00000001;
+    public static double kd = 0.0000001;
+    public static double kf = 400;
+    public static long timeBetweenUpdates = 0;
 
 
-    public final static double SPEED_FROM_MID = 1450;
-    public final static double SPEED_FROM_CLOSE = 1270;
+    public final static double SPEED_FROM_MID = 1500;
+    public final static double SPEED_FROM_CLOSE = 1200;
 
     public final double[][] SHOOTER_POWERS = {
             {0.8, 0.77, 0.71, 0.65, 0.63, 0.62, 0.61, 0.6},   // קרוב

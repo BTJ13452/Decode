@@ -51,13 +51,12 @@ public class BTJTeleOp extends OpMode {
             synchronized (shooter) {
                 shooter.setVelocity(Shooter.SPEED_FROM_CLOSE);
                 if (shooter.getVelocity() >= Shooter.SPEED_FROM_CLOSE + Shooter.error) {
-                    shooter.setVelocity(Shooter.kfErrorClose);
+                    shooter.setVelocity(Shooter.kfError);
                     sleep(Shooter.timeBetweenUpdates);
                 } else shooter.setVelocity(Shooter.SPEED_FROM_CLOSE);
-                sleep(WAIT_BETWEEN_UPDATE_SHOOTER_CLOSE);
+                sleep(WAIT_BETWEEN_UPDATE_SHOOTER_MID);
 
             }
-
         }
     });
     Thread UpdateShooterFromMID = new Thread(new Runnable() {
@@ -65,14 +64,12 @@ public class BTJTeleOp extends OpMode {
             synchronized (shooter) {
                 shooter.setVelocity(Shooter.SPEED_FROM_MID);
                 if (shooter.getVelocity() >= Shooter.SPEED_FROM_MID + Shooter.error) {
-                    shooter.setVelocity(Shooter.kfErrorMid);
+                    shooter.setVelocity(Shooter.kfError);
                     sleep(Shooter.timeBetweenUpdates);
                 } else shooter.setVelocity(Shooter.SPEED_FROM_MID);
-
                 sleep(WAIT_BETWEEN_UPDATE_SHOOTER_MID);
             }
         }
-
     });
 
 
