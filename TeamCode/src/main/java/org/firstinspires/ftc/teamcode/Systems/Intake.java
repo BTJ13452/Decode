@@ -6,7 +6,6 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,11 +13,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
 import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
-import kotlin.jvm.Synchronized;
-
 public class Intake {
-
-
 
 
     public enum Direction {
@@ -44,12 +39,12 @@ public class Intake {
     }
 
     final double IN_POWER = 1;
-    final int WAIT_BETWEEN_FIRST_BALL = 200;
-    final int WAIT_BETWEEN_SECOND_BALL = 300;
-    final int WAIT_BETWEEN_THIRD_BALL = 500;
-    final int WAIT_BETWEEN_FIRST_BALL_MID = 800;
-    final int WAIT_BETWEEN_SECOND_BALL_MID = 1200;
-    final int WAIT_BETWEEN_THIRD_BALL_MID = 500;
+    public final int WAIT_BETWEEN_FIRST_BALL = 200;
+    public final int WAIT_BETWEEN_SECOND_BALL = 300;
+    public final int WAIT_BETWEEN_THIRD_BALL = 500;
+    public final int WAIT_BETWEEN_FIRST_BALL_MID = 600;
+    public final int WAIT_BETWEEN_SECOND_BALL_MID = 1000;
+    public final int WAIT_BETWEEN_THIRD_BALL_MID = 500;
 
     CRServo rightFirstStageIntakeServo;
     CRServo leftFirstStageIntakeServo;
@@ -64,10 +59,10 @@ public class Intake {
     PredominantColorProcessor thirdCell2;
 
 
-    Thread shootVolley = new Thread(new Runnable() {
+    public final Thread shootVolley = new Thread(new Runnable() {
         @Override
         public void run() {
-            synchronized (this) {
+            synchronized (shootVolley) {
 
                 transportArtifactToShooter(Cell.RIGHT);
                 sleep(WAIT_BETWEEN_FIRST_BALL);
@@ -81,10 +76,10 @@ public class Intake {
             }
         }
     });
-    public Thread shootVolleyMid = new Thread(new Runnable() {
+    public final Thread shootVolleyMid = new Thread(new Runnable() {
         @Override
         public void run() {
-            synchronized (this) {
+            synchronized (shootVolleyMid) {
 
                 transportArtifactToShooter(Cell.RIGHT);
                 sleep(WAIT_BETWEEN_FIRST_BALL_MID);
@@ -98,6 +93,25 @@ public class Intake {
             }
         }
     });
+    public void shootVolley() {
+        synchronized (shootVolley) {
+            if (shootVolley.isAlive()) {
+                shootVolley.interrupt();
+            } else {
+                shootVolley.start();
+            }
+        }
+    }
+    public void shootVolleyMid() {
+        synchronized (shootVolleyMid) {
+            if (shootVolleyMid.isAlive()) {
+                shootVolleyMid.interrupt();
+            } else {
+                shootVolleyMid.start();
+            }
+        }
+    }
+
 
     public Intake(HardwareMap hardwareMap) {
         rightFirstStageIntakeServo = hardwareMap.get(CRServo.class, "1st Stage Right Servo");
@@ -223,21 +237,6 @@ public class Intake {
             leftSecondStageTransport(Direction.FORWARD);
         }
         thirdStageTransport(Direction.FORWARD);
-    }
-
-    public void shootVolley() {
-        if (shootVolley.isAlive()) {
-            shootVolley.interrupt();
-        } else {
-            shootVolley.start();
-        }
-    }
-    public void shootVolleyMid() {
-        if (shootVolley.isAlive()) {
-            shootVolley.interrupt();
-        } else {
-            shootVolley.start();
-        }
     }
 
     public boolean whatDirectionThePurpleBall() {
