@@ -28,6 +28,7 @@ public abstract class BTJAuto extends OpMode {
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         intake = new Intake(hardwareMap);
         shooter = new Shooter(hardwareMap);
+        shooter.runByPidf();
 
         path = new Thread(new Runnable() {
             @Override
@@ -44,8 +45,6 @@ public abstract class BTJAuto extends OpMode {
         telemetry.update();
         pinpoint.update();
     }
-
-
     @Override
     public void start() {
         path.start();
