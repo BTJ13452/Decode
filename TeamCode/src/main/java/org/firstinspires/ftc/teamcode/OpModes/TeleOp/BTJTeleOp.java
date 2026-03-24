@@ -39,8 +39,9 @@ public class BTJTeleOp extends OpMode {
             gamepad1.xWasReleased();
             sleep(LONG_PRESS_MILLISECONDS);
             if (!gamepad1.xWasReleased()) {
+
                 intake.startAll(Intake.Direction.REVERSE);
-                intake.firstStageIntake(Intake.Direction.FORWARD);
+                intake.firstStageIntake(Intake.Direction.REVERSE);
                 intake.secondStageTransport(Intake.Direction.REVERSE);
                 intake.thirdStageTransport(Intake.Direction.REVERSE);
             }
@@ -215,15 +216,17 @@ public class BTJTeleOp extends OpMode {
         }
 
 
-        if (intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn() && intake.areThreeIn()) {
+        if (intake.validateAreThreeIn(75)) {
             LEDs.setColorGreen();
-        } else if (!intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn() && !intake.areThreeIn()) {
+        } else if (intake.validateAreBallStuck(75)){
+            LEDs.setColorOrange();
+        } else if (intake.validateAreNotThreeIn(75)) {
             LEDs.turnOff();
         }
 
         printTelemetry();
-    }
 
+    }
     @Override
     public void stop() {
         if (waitForLongXPress.isAlive()) {

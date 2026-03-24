@@ -53,10 +53,10 @@ public class Intake {
     DcMotor thirdStageTransportMotor;
 
     VisionPortal camera;
-    PredominantColorProcessor firstCell;
-    PredominantColorProcessor secondCell;
-    PredominantColorProcessor thirdCell;
-    PredominantColorProcessor thirdCell2;
+    PredominantColorProcessor rightCell;
+    PredominantColorProcessor leftCell;
+    PredominantColorProcessor frontRightCell;
+    PredominantColorProcessor frontLeftCell;
 
 
     public final Thread shootVolley = new Thread(new Runnable() {
@@ -93,6 +93,7 @@ public class Intake {
             }
         }
     });
+
     public void shootVolley() {
         synchronized (shootVolley) {
             if (shootVolley.isAlive()) {
@@ -102,6 +103,7 @@ public class Intake {
             }
         }
     }
+
     public void shootVolleyMid() {
         synchronized (shootVolleyMid) {
             if (shootVolleyMid.isAlive()) {
@@ -131,7 +133,7 @@ public class Intake {
         thirdStageTransportMotor.setDirection(DcMotor.Direction.FORWARD);
 
 
-        firstCell = new PredominantColorProcessor.Builder()
+        rightCell = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.45, -0.55, -0.35, -0.9))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
@@ -143,7 +145,7 @@ public class Intake {
                 )
                 .build();
 
-        secondCell = new PredominantColorProcessor.Builder()
+        leftCell = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(0.5, -0.55, 0.65, -0.9))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
@@ -155,7 +157,7 @@ public class Intake {
                 )
                 .build();
 
-        thirdCell = new PredominantColorProcessor.Builder()
+        frontLeftCell = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(-0.3, 0.3, -0.12, 0.05))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
@@ -169,7 +171,7 @@ public class Intake {
                 )
                 .build();
 
-        thirdCell2 = new PredominantColorProcessor.Builder()
+        frontRightCell = new PredominantColorProcessor.Builder()
                 .setRoi(ImageRegion.asUnityCenterCoordinates(0.15, 0.3, 0.25, 0.05))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
@@ -185,10 +187,7 @@ public class Intake {
 
 
         camera = new VisionPortal.Builder()
-                .addProcessor(firstCell)
-                .addProcessor(secondCell)
-                .addProcessor(thirdCell)
-                .addProcessor(thirdCell2)
+                .addProcessors(rightCell, leftCell, frontLeftCell, frontRightCell)
                 .setCameraResolution(new Size(1280, 720))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .build();
@@ -239,67 +238,79 @@ public class Intake {
         thirdStageTransport(Direction.FORWARD);
     }
 
-    public boolean whatDirectionThePurpleBall() {
-        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
-        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
+//    public boolean whatDirectionThePurpleBall() {
+//        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
+//        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
+//        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
+//
+//        return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+//                firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.GREEN &&
+//                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
+//                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.PURPLE &&
+//                thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+//    }
 
-        return (firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
-                firstCellResult.closestSwatch != PredominantColorProcessor.Swatch.GREEN &&
-                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK &&
-                secondCellResult.closestSwatch != PredominantColorProcessor.Swatch.PURPLE &&
-                thirdCellResult.closestSwatch != PredominantColorProcessor.Swatch.BLACK);
+
+
+    public boolean isArtifactIn(PredominantColorProcessor.Result result) {
+        return result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
+                result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE;
+    }
+
+    public boolean checkArtifactStatus(boolean right, boolean left, boolean front) {
+        PredominantColorProcessor.Result firstCellResult = rightCell.getAnalysis();
+        PredominantColorProcessor.Result secondCellResult = leftCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult = frontRightCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult2 = frontLeftCell.getAnalysis();
+
+        return isArtifactIn(firstCellResult) == right &&
+                isArtifactIn(secondCellResult) == left &&
+                (isArtifactIn(thirdCellResult) || isArtifactIn(thirdCellResult2)) == front;
     }
 
     public boolean areThreeIn() {
-        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
-        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult2 = thirdCell2.getAnalysis();
-
-        return ((firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                (secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
+        return checkArtifactStatus(true, true,true);
     }
 
     public boolean areBallStuckR() {
-        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
-        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult2 = thirdCell2.getAnalysis();
-
-        return (!(firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                (secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
-
+        return checkArtifactStatus(false, true,true);
     }
 
     public boolean areBallStuckL() {
-        PredominantColorProcessor.Result firstCellResult = firstCell.getAnalysis();
-        PredominantColorProcessor.Result secondCellResult = secondCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult = thirdCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult2 = thirdCell2.getAnalysis();
-
-        return ((firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                firstCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                !(secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        secondCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE) &&
-                (thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                        thirdCellResult.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE ||
-                        thirdCellResult2.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN));
-
+        return checkArtifactStatus(true, false,true);
     }
+
+    public boolean areBallStuck() {
+        return areBallStuckL() || areBallStuckR();
+    }
+
+    public boolean validateAreThreeIn(int iterations) {
+        for (int i = 0; i < iterations; i++) {
+            if (!areThreeIn()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean validateAreBallStuck(int iterations) {
+        for (int i = 0; i < iterations; i++) {
+            if (!areBallStuck()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public  boolean validateAreNotThreeIn(int iterations){
+        for (int i = 0; i < iterations; i++) {
+            if (areThreeIn()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public void stop() {
         if (shootVolley.isAlive()) {
