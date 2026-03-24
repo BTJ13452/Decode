@@ -94,7 +94,7 @@ public class BTJTeleOp extends OpMode {
 
         drive.drive(forward, strafe, rotate);
 
-        shooter.RunByPidf();
+        shooter.runByPidf();
 
 
         if (gamepad1.dpadRightWasPressed()) {
