@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Systems;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+@Config
 public class Shooter {
 
     public final int CLOSE_CELL_IN_POWERS = 0;
@@ -13,14 +15,14 @@ public class Shooter {
     public final int FAR_CELL_IN_POWERS = 2;
     public static double error = 1;
     public static double kfError = 20;
-    public static double kp = 0.00000001;
-    public static double kd = 0.0000001;
-    public static double kf = 400;
+    public static double kp = 29;
+    public static double kd = -12;
+    public static double kf = 14.5;
     public static long timeBetweenUpdates = 0;
 
 
     public final static double SPEED_FROM_MID = 1500;
-    public final static double SPEED_FROM_CLOSE = 1200;
+    public final static double SPEED_FROM_CLOSE = 1300;
 
     public final double[][] SHOOTER_POWERS = {
             {0.8, 0.77, 0.71, 0.65, 0.63, 0.62, 0.61, 0.6},   // קרוב
@@ -63,14 +65,19 @@ public class Shooter {
         return shooterMotor.getVelocity();
     }
 
-    public void RunByPidf() {
+    public void runByPidf() {
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(kp, 0.0, kd, kf);
         shooterMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
     }
 
 
-    public static int voltageFindRange(double voltage) {
+    public double ShooterByDistance(double d) {
+        return -95.67342 * d +1445.03733;
+    }
+
+
+        public static int voltageFindRange(double voltage) {
 
         if (Double.isNaN(voltage)) return 0;
         if (voltage <= 10) return 0;
