@@ -6,6 +6,7 @@ import static android.os.SystemClock.sleep;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,21 +19,14 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @TeleOp
 @Config
+
 public class TestShooter extends OpMode {
 
     public double targetVelocity;
-    public double preTargetVelocity;
-    public double error = 70;
-    public double kfError = 10;
-    public double kp = 0.00001;
-    public double kd = 0.0001;
-    public double kf = 400;
-    boolean targetNull = true;
 
 
     Shooter shooter;
     Intake intake;
-    VoltageSensor voltageSensor;
     LLResult llResult;
     Limelight3A limelight;
 
@@ -41,14 +35,11 @@ public class TestShooter extends OpMode {
     public void init() {
 
         shooter = new Shooter(hardwareMap);
-//        telemetry.addLine("Int complete");
 
         intake = new Intake(hardwareMap);
         intake.startAll(Intake.Direction.FORWARD);
         shooter.runByPidf();
 
-
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
 
@@ -60,20 +51,10 @@ public class TestShooter extends OpMode {
 
     @Override
     public void loop() {
-        if (llResult != null) {
-            llResult = limelight.getLatestResult();
-            double ta = llResult.getTa();
-////            targetVelocity = (shooter.ShooterByDistance(ta));
-        }
-        shooter.setVelocity(targetVelocity);
+        llResult = limelight.getLatestResult();
 
         shooter.runByPidf();
-
-//        if (shooter.getVelocity() >= targetVelocity + error) {
-//            shooter.setVelocity(kfError);
-//            telemetry.addLine("shooter stabilisation");
-//
-//        } else targetNull = true;
+        shooter.setVelocity(targetVelocity);
 
         if (gamepad1.dpadUpWasPressed()) {
             targetVelocity += 50;
@@ -98,7 +79,6 @@ public class TestShooter extends OpMode {
             telemetry.addData("ta", llResult.getTa());
 
         }
-
         telemetry.update();
 
     }

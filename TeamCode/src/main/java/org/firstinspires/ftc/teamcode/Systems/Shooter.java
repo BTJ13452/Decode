@@ -15,8 +15,8 @@ public class Shooter {
     public final int FAR_CELL_IN_POWERS = 2;
     public static double error = 1;
     public static double kfError = 20;
-    public static double kp = 29;
-    public static double kd = -12;
+    public static double kp = 80;
+    public static double kd = -5 ;
     public static double kf = 14.5;
     public static long timeBetweenUpdates = 0;
 
@@ -72,12 +72,12 @@ public class Shooter {
     }
 
 
-    public double ShooterByDistance(double d) {
-        return -95.67342 * d +1445.03733;
+    public double shooterByDistance(double d) {
+        return 1601.34182 * Math.pow(0.855924, d);
     }
 
 
-        public static int voltageFindRange(double voltage) {
+    public static int voltageFindRange(double voltage) {
 
         if (Double.isNaN(voltage)) return 0;
         if (voltage <= 10) return 0;

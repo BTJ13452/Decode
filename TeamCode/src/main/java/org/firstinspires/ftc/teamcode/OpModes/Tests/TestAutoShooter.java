@@ -1,104 +1,72 @@
 package org.firstinspires.ftc.teamcode.OpModes.Tests;
 
-import android.util.Size;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import static android.os.SystemClock.sleep;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.teamcode.Systems.Intake;
+import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
-import java.util.List;
 
 @TeleOp
-@Disabled
-
+@Config
 
 public class TestAutoShooter extends OpMode {
 
-    private AprilTagProcessor aprilTag;
+    public static double targetVelocity = 1300;
 
-    VoltageSensor voltageSensor;
 
-    final double delta = 0.05;
+    Shooter shooter;
+    Intake intake;
+    LLResult llResult;
+    Limelight3A limelight;
 
-    final double alfa = 0.01;
-
-    double motorPower = 0.5;
-
-    private DcMotor shooter;
-
-    boolean yIsPressed = false;
-
-    boolean aIsPressed = false;
-
-    boolean bIsPressed = false;
-
-    boolean xIsPressed = false;
 
     @Override
     public void init() {
-        shooter = hardwareMap.dcMotor.get("Shooter");
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
+        shooter = new Shooter(hardwareMap);
 
-        aprilTag = new AprilTagProcessor.Builder()
-                .setDrawAxes(true)
-                .setDrawCubeProjection(true)
-                .setDrawTagOutline(true)
-                .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
-                .build();
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        telemetry.setMsTransmissionInterval(11);
 
-        new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Choose a name"))
-                .setCameraResolution(new Size(640, 480))
-                .addProcessor(aprilTag)
-                .build();
+        limelight.pipelineSwitch(1);
+        limelight.start();
+
+
     }
 
     @Override
     public void loop() {
-        double adapter = 0;
-        if (voltageSensor.getVoltage() > 13) {
-            adapter = -0.065;
+        llResult = limelight.getLatestResult();
 
-        } else if (voltageSensor.getVoltage() > 12.5) {
-            adapter = -0.055;
-        } else if (voltageSensor.getVoltage() > 12) {
-            adapter = -0.04;
-        } else if (voltageSensor.getVoltage() > 11) {
-            adapter = 0.02;
+        shooter.runByPidf();
+        shooter.setVelocity(targetVelocity);
+
+        telemetry.addData("Velocity", shooter.getVelocity());
+        telemetry.addData("Target Velocity", targetVelocity);
+        telemetry.addData("null", llResult == null);
+        if (llResult != null) {
+            telemetry.addData("ta", llResult.getTa());
+            sleep(2000);
+
         }
-        telemetry.addData("volt", voltageSensor.getVoltage());
-
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.id == 24) {
-                telemetry.addData("distance", detection.ftcPose.y);
-                shooter.setPower(p(detection.ftcPose.y) + adapter);
-            }
-        }
-
-        telemetry.addData("power", shooter.getPower());
         telemetry.update();
+
     }
 
-    static final double a = 2.549790517774111e-6;
-    static final double b = -0.002401417848971357;
-    static final double c = 0.7517715960347462;
-    static final double d = -77.29541900481152;
 
-      // Evaluate polynomial using Horner's method
-    public static double p(double x) {
-        return ((a * x + b) * x + c) * x + d;
+    @Override
+    public void stop() {
+        shooter.setVelocity(0);
     }
 }
+
