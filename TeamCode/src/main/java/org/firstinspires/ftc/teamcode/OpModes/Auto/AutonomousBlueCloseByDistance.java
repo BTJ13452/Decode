@@ -57,7 +57,7 @@ public class AutonomousBlueCloseByDistance extends BTJAuto {
         //drive horizontally for first intake
         pinpoint.resetPosAndIMU();
         drive.drive(-0.4, 0, 0);
-        while (pinpoint.getPosY(DistanceUnit.CM) < 27 ) {
+        while (pinpoint.getPosY(DistanceUnit.CM) < 20) {
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
             telemetry.addData("r =", pinpoint.getHeading(AngleUnit.DEGREES));
@@ -95,7 +95,7 @@ public class AutonomousBlueCloseByDistance extends BTJAuto {
         //rotate to second shooting
         pinpoint.resetPosAndIMU();
         drive.drive(0, 0, 0.25);
-        while (pinpoint.getHeading(AngleUnit.DEGREES) < 29) {
+        while (pinpoint.getHeading(AngleUnit.DEGREES)  > -27) {
             telemetry.addData("x =", pinpoint.getPosX(DistanceUnit.CM));
             telemetry.addData("y =", pinpoint.getPosY(DistanceUnit.CM));
             telemetry.addData("r =", pinpoint.getHeading(AngleUnit.DEGREES));

@@ -10,15 +10,12 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 @Config
 public class Shooter {
 
-    public final int CLOSE_CELL_IN_POWERS = 0;
-    public final int MID_CELL_IN_POWERS = 1;
-    public final int FAR_CELL_IN_POWERS = 2;
-    public static double error = 1;
-    public static double kfError = 20;
+
     public static double kp = 80;
-    public static double kd = -5 ;
+    public static double kd = -5;
     public static double kf = 14.5;
-    public static long timeBetweenUpdates = 0;
+    double firstNumber = 1506.98732;
+    double secondNumber = 0.935609;
 
 
     public final static double SPEED_FROM_MID = 1500;
@@ -31,7 +28,6 @@ public class Shooter {
 
             {0.98, 0.98, 0.98, 0.940, 0.890, 0.87, 0.860, 0.7}    // צמוד לקיר
 //
-//           10.5v 11v 11.5V, 12V, ,12.5V, 13V, 13+
     };
 
 
@@ -73,7 +69,7 @@ public class Shooter {
 
 
     public double shooterByDistance(double d) {
-        return 1601.34182 * Math.pow(0.855924, d);
+        return firstNumber * Math.pow(secondNumber, d);
     }
 
 

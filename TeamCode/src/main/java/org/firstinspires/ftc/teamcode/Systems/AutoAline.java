@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.OpModes.TeleOp.BTJTeleOp;
 public class AutoAline {
 
 
-
     public enum AllianceColor {
         BLUE,
         RED;
@@ -49,9 +48,8 @@ public class AutoAline {
         limelight.start();
     }
 
-    public double rotationForAlignment(double curTime, double defaultValue) {
+    public double rotationForAlignmentFar(double curTime, double defaultValue) {
         LLResult llResult = limelight.getLatestResult();
-        llResult.getTx();
         error = llResult.getTx() - goalTx;
 
 
@@ -88,8 +86,6 @@ public class AutoAline {
     public void stop() {
         limelight.stop();
     }
-
-
 }
 
 

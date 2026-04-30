@@ -17,12 +17,14 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 public class BTJTeleOp extends OpMode {
     protected static AutoAline.AllianceColor AllianceColor;
     final int LONG_PRESS_MILLISECONDS = 500;
+    final int CONST_SHOOTER_SPEED = 1300;
     final double PRESS = 0.1;
     double power;
     double forward, strafe, rotate;
     public double targetVelocity;
     public double preTargetVelocity;
     boolean seenBasket = false;
+    boolean wasRightStickButon = false;
 
 
     VoltageSensor voltageSensor;
@@ -75,7 +77,7 @@ public class BTJTeleOp extends OpMode {
     public void loop() {
         forward = gamepad1.left_stick_x;
         strafe = -gamepad1.left_stick_y;
-        rotate = gamepad1.right_trigger > PRESS ? autoAline.rotationForAlignment(getRuntime(), gamepad1.right_stick_x) : gamepad1.right_stick_x;
+        rotate = gamepad1.right_trigger > PRESS ? autoAline.rotationForAlignmentFar(getRuntime(), gamepad1.right_stick_x) : gamepad1.right_stick_x;
 
         drive.drive(forward, strafe, rotate);
 
@@ -83,22 +85,21 @@ public class BTJTeleOp extends OpMode {
         shooter.runByPidf();
 
 
+            if (llResult != null) {
+                llResult = limelight.getLatestResult();
+                double ta = llResult.getTa();
+                targetVelocity = (shooter.shooterByDistance(ta));
+                preTargetVelocity = (shooter.getVelocity());
+                shooter.setVelocity(targetVelocity);
+                seenBasket = true;
+                wasRightStickButon = true;
 
-        if (llResult != null) {
-            llResult = limelight.getLatestResult();
-            double ta = llResult.getTa();
-            targetVelocity = (shooter.shooterByDistance(ta));
-            preTargetVelocity = (shooter.getVelocity());
-            shooter.setVelocity(targetVelocity);
-            seenBasket = true;
+            }
+            if (llResult.getTa() == 0) {
+                llResult = limelight.getLatestResult();
+                shooter.setVelocity(CONST_SHOOTER_SPEED);
 
-        }
-        if (llResult.getTa() == 0) {
-            llResult = limelight.getLatestResult();
-            shooter.setVelocity(1300);
-
-        }
-
+            }
         shooter.runByPidf();
 
         if (gamepad1.xWasPressed()) {
@@ -142,7 +143,7 @@ public class BTJTeleOp extends OpMode {
                 parking.lowerRobot();
             } else {
                 parking.raiseRobot();
-                shooter.setVelocity(0);
+                shooter.setPower(0);
                 intake.stop();
 
             }

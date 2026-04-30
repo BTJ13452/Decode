@@ -42,9 +42,9 @@ public class Intake {
     public final int WAIT_BETWEEN_FIRST_BALL = 200;
     public final int WAIT_BETWEEN_SECOND_BALL = 300;
     public final int WAIT_BETWEEN_THIRD_BALL = 500;
-    public final int WAIT_BETWEEN_FIRST_BALL_MID = 600;
-    public final int WAIT_BETWEEN_SECOND_BALL_MID = 1000;
-    public final int WAIT_BETWEEN_THIRD_BALL_MID = 500;
+    public final int WAIT_BETWEEN_FIRST_BALL_MID = 500;
+    public final int WAIT_BETWEEN_SECOND_BALL_MID = 500;
+    public final int WAIT_BETWEEN_THIRD_BALL_MID = 1000;
 
     CRServo rightFirstStageIntakeServo;
     CRServo leftFirstStageIntakeServo;

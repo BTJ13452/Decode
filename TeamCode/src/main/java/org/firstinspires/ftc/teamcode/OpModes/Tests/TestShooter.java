@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @TeleOp
 @Config
+@Disabled
 
 public class TestShooter extends OpMode {
 
