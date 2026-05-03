@@ -8,6 +8,7 @@ public final class Drawing {
     private Drawing() {}
 
 
+
     public static void drawRobot(Canvas c, Pose2d t) {
         final double ROBOT_RADIUS = 9;
 

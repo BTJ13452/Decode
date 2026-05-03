@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.opencv.ImageRegion;
 import org.firstinspires.ftc.vision.opencv.PredominantColorProcessor;
 
 public class Intake {
-
 
     public enum Direction {
         FORWARD,
@@ -36,6 +36,12 @@ public class Intake {
     public enum Cell {
         RIGHT,
         LEFT;
+    }
+
+    public enum ArtifactColor{
+        PURPLE,
+        GREEN,
+        NOTHING;
     }
 
     final double IN_POWER = 1;
@@ -251,11 +257,28 @@ public class Intake {
 //    }
 
 
+    public ArtifactColor whichArtifactIn(PredominantColorProcessor.Result result) {
+        switch (result.closestSwatch){
+            case ARTIFACT_PURPLE:
+                return ArtifactColor.PURPLE;
+            case ARTIFACT_GREEN:
+                return ArtifactColor.GREEN;
+            default:
+                return ArtifactColor.NOTHING;
+        }
+    }
 
     public boolean isArtifactIn(PredominantColorProcessor.Result result) {
-        return result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_GREEN ||
-                result.closestSwatch == PredominantColorProcessor.Swatch.ARTIFACT_PURPLE;
+        return whichArtifactIn(result) != ArtifactColor.NOTHING;
     }
+
+    public ArtifactColor whichArtifactInCell (Cell cell){
+        PredominantColorProcessor.Result firstCellResult = rightCell.getAnalysis();
+        PredominantColorProcessor.Result secondCellResult = leftCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult = frontRightCell.getAnalysis();
+        PredominantColorProcessor.Result thirdCellResult2 = frontLeftCell.getAnalysis();
+    }
+
 
     public boolean checkArtifactStatus(boolean right, boolean left, boolean front) {
         PredominantColorProcessor.Result firstCellResult = rightCell.getAnalysis();
@@ -292,6 +315,8 @@ public class Intake {
         }
         return true;
     }
+
+
 
     public boolean validateAreBallStuck(int iterations) {
         for (int i = 0; i < iterations; i++) {
