@@ -141,6 +141,7 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.yWasPressed()) {
             if (parking.isRobotRaised()) {
                 parking.lowerRobot();
+                LEDs.blinkBlueWhite();
             } else {
                 parking.raiseRobot();
                 shooter.setPower(0);

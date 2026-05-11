@@ -6,10 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 
 @TeleOp
-@Disabled
+//@Disabled
 
 
 public class TestIntake extends OpMode {
@@ -42,7 +43,8 @@ public class TestIntake extends OpMode {
         });
     }
 ;
-      @Override
+
+    @Override
     public void loop() {
           if (gamepad1.xWasPressed()) {
               if (intake.isIntakeActive()) {
@@ -55,6 +57,13 @@ public class TestIntake extends OpMode {
               waitForLongXPress.start();
 
           }
+
+        telemetry.addData("right", intake.whichArtifactInCell(Intake.Cell.RIGHT));
+        telemetry.addData("left", intake.whichArtifactInCell(Intake.Cell.LEFT));
+        telemetry.addData("middle", intake.whichArtifactInCell(Intake.Cell.MIDDLE));
+
+
+
 
 //            if (gamepad1.right_bumperwasPresed) {
 //                intake.deMidRightActivateIntake();

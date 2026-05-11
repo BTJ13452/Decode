@@ -35,10 +35,11 @@ public class Intake {
 
     public enum Cell {
         RIGHT,
-        LEFT;
+        LEFT,
+        MIDDLE;
     }
 
-    public enum ArtifactColor{
+    public enum ArtifactColor {
         PURPLE,
         GREEN,
         NOTHING;
@@ -140,7 +141,8 @@ public class Intake {
 
 
         rightCell = new PredominantColorProcessor.Builder()
-                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.45, -0.55, -0.35, -0.9))
+                .setRoi(ImageRegion.asUnityCenterCoordinates(-0.55
+                        , -0.55, -0.4, -0.9))
                 .setSwatches(
                         PredominantColorProcessor.Swatch.ARTIFACT_GREEN,
                         PredominantColorProcessor.Swatch.ARTIFACT_PURPLE,
@@ -258,7 +260,7 @@ public class Intake {
 
 
     public ArtifactColor whichArtifactIn(PredominantColorProcessor.Result result) {
-        switch (result.closestSwatch){
+        switch (result.closestSwatch) {
             case ARTIFACT_PURPLE:
                 return ArtifactColor.PURPLE;
             case ARTIFACT_GREEN:
@@ -272,11 +274,17 @@ public class Intake {
         return whichArtifactIn(result) != ArtifactColor.NOTHING;
     }
 
-    public ArtifactColor whichArtifactInCell (Cell cell){
-        PredominantColorProcessor.Result firstCellResult = rightCell.getAnalysis();
-        PredominantColorProcessor.Result secondCellResult = leftCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult = frontRightCell.getAnalysis();
-        PredominantColorProcessor.Result thirdCellResult2 = frontLeftCell.getAnalysis();
+    public ArtifactColor whichArtifactInCell(Cell cell) {
+        switch (cell) {
+            case RIGHT:
+                return whichArtifactIn(rightCell.getAnalysis());
+            case LEFT:
+                return whichArtifactIn(leftCell.getAnalysis());
+            default:
+                if(isArtifactIn(frontRightCell.getAnalysis()))
+                    return whichArtifactIn(frontRightCell.getAnalysis());
+                return whichArtifactIn(frontLeftCell.getAnalysis());
+        }
     }
 
 
@@ -292,15 +300,15 @@ public class Intake {
     }
 
     public boolean areThreeIn() {
-        return checkArtifactStatus(true, true,true);
+        return checkArtifactStatus(true, true, true);
     }
 
     public boolean areBallStuckR() {
-        return checkArtifactStatus(false, true,true);
+        return checkArtifactStatus(false, true, true);
     }
 
     public boolean areBallStuckL() {
-        return checkArtifactStatus(true, false,true);
+        return checkArtifactStatus(true, false, true);
     }
 
     public boolean areBallStuck() {
@@ -317,7 +325,6 @@ public class Intake {
     }
 
 
-
     public boolean validateAreBallStuck(int iterations) {
         for (int i = 0; i < iterations; i++) {
             if (!areBallStuck()) {
@@ -327,7 +334,7 @@ public class Intake {
         return true;
     }
 
-    public  boolean validateAreNotThreeIn(int iterations){
+    public boolean validateAreNotThreeIn(int iterations) {
         for (int i = 0; i < iterations; i++) {
             if (areThreeIn()) {
                 return false;
