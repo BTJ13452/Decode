@@ -19,11 +19,10 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @TeleOp
 @Config
-@Disabled
 
 public class TestAutoShooter extends OpMode {
 
-    public static double targetVelocity = 1300;
+    public static double targetVelocity = 1450;
 
 
     Shooter shooter;
@@ -36,6 +35,9 @@ public class TestAutoShooter extends OpMode {
     public void init() {
 
         shooter = new Shooter(hardwareMap);
+
+        intake = new Intake(hardwareMap);
+        intake.startAll(Intake.Direction.FORWARD);
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         telemetry.setMsTransmissionInterval(11);
@@ -52,6 +54,9 @@ public class TestAutoShooter extends OpMode {
 
         shooter.runByPidf();
         shooter.setVelocity(targetVelocity);
+
+
+
 
         telemetry.addData("Velocity", shooter.getVelocity());
         telemetry.addData("Target Velocity", targetVelocity);
