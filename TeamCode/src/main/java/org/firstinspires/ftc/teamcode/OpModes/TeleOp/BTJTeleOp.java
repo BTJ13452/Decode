@@ -64,8 +64,6 @@ public class BTJTeleOp extends OpMode {
         parking = new Parking(hardwareMap);
         LEDs = new RGBController(hardwareMap);
 
-        power = 0;
-
         shooter.runByPidf();
         preTargetVelocity = 1300;
 
