@@ -1,18 +1,23 @@
-package org.firstinspires.ftc.teamcode;
-
-import static android.os.SystemClock.sleep;
-
-import com.pedropathing.follower.Follower;
+package org.firstinspires.ftc.teamcode; // make sure this aligns with class location
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import static com.pedropathing.ivy.Scheduler.*;
+import static com.pedropathing.ivy.commands.Commands.onInterrupt;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.pedro.PedroCommands.*;
+import static com.pedropathing.ivy.groups.Groups.*;
+
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 
 import org.firstinspires.ftc.teamcode.Systems.AutoAline;
 import org.firstinspires.ftc.teamcode.Systems.Drive;
@@ -24,8 +29,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
 public class PedroAuto extends OpMode {
-    private Follower follower;
-    private Timer pathTimer, opModeTimer;
+
     VoltageSensor voltageSensor;
     Drive drive;
     Intake intake;
@@ -35,60 +39,63 @@ public class PedroAuto extends OpMode {
     AutoAline autoAline;
     LLResult llResult;
     Limelight3A limelight;
+    Command shootVolleyAuto = onInterrupt(() -> intake.shootVolley());
+    Command pause = waitMs(500); // waits 500ms
 
-    public enum PathState {
-        DRIVE_STARTPOS_SHOOT_POS,
-        SHOOT_PRELODE
+
+
+
+    private final Pose startPose = new Pose(20.718068535825545, 121.66355140186916, Math.toRadians(142));
+    private final Pose scorePose = new Pose(53.778816199376934, 88.16199376947041, Math.toRadians(142));
+    private final Pose pickup1Pose = new Pose(24.024143302180686, 83.04080996884736, Math.toRadians(180));
+    private final Pose endPose = new Pose(62.22340479420247, 100.26600752051756);
+
+    private PathChain scorePreload, grabPickup1, scorePickup1, leave;
+
+    public void buildPaths() {
+        scorePreload = follower.pathBuilder()
+                .addPath(new BezierLine(startPose, scorePose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
+                .build();
+
+
+        grabPickup1 = follower.pathBuilder()
+                .addPath(new BezierLine(scorePose, pickup1Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(18.954828660436135, 84.72936137071652), pickup1Pose))
+
+                .build();
+
+        scorePickup1 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup1Pose, scorePose))
+                .addPath(new BezierCurve(pickup1Pose, new Pose(41.069025510355154, 82.12202558740627), scorePose))
+                .build();
+
+        leave = follower.pathBuilder()
+                .addPath(new BezierLine(scorePose, endPose))
+                .setConstantHeadingInterpolation(scorePose.getHeading())
+                .build();
     }
 
-    PathState pathState;
-
-    private final Pose startPos = new Pose(21.396417445482854, 122.39018691588784, Math.toRadians(142));
-    private final Pose shootPose = new Pose(48.70950155763238, 93.01090342679129, Math.toRadians(142));
-    private PathChain driveStartPosShootPos;
-    public double targetVelocity;
     public double preTargetVelocity;
     final int CONST_SHOOTER_SPEED = 1300;
 
 
-    public void buildPaths() {
-        driveStartPosShootPos = follower.pathBuilder()
-                .addPath(new BezierLine(startPos, shootPose))
-                .setLinearHeadingInterpolation(startPos.getHeading(), shootPose.getHeading())
-                .build();
+    public Command autoRoutine() {
+        return sequential(
+                follow(follower, scorePreload),
+                follow(follower, grabPickup1, true),
+                pause,
+                follow(follower, scorePickup1, true),
+                pause,
+                follow(follower, leave, true)
+        );
     }
 
-    public void statePathUpdate() {
-        switch (pathState) {
-            case DRIVE_STARTPOS_SHOOT_POS:
-                follower.followPath(driveStartPosShootPos, true);
-                setPathState(PathState.SHOOT_PRELODE);
-                break;
-            case SHOOT_PRELODE:
-                if (!follower.isBusy()) {
-                    sleep(3000);
-                    intake.shootVolley();
-//                    next state
-                }
-                break;
-            default:
-                telemetry.addLine("No state Comanded");
-                break;
-
-        }
-    }
-
-    public void setPathState(PathState newState) {
-        pathState = newState;
-        pathTimer.resetTimer();
-    }
 
 
     @Override
     public void init() {
-        pathState = PathState.DRIVE_STARTPOS_SHOOT_POS;
-        pathTimer = new Timer();
-        opModeTimer = new Timer();
+
         follower = Constants.createFollower(hardwareMap);
 
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
@@ -107,31 +114,33 @@ public class PedroAuto extends OpMode {
         limelight.pipelineSwitch(1);
         limelight.start();
 
+        //These will run when the OpMode is initiated
+        Scheduler.reset();
+        follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setPose(startPos);
-
+        follower.setStartingPose(startPose);
 
     }
 
+
     public void start() {
-        opModeTimer.resetTimer();
-        setPathState(pathState);
+        schedule(autoRoutine());
     }
 
     @Override
     public void loop() {
         shooter.runByPidf();
-        shooter.setVelocity(1300);
+        shooter.setVelocity(CONST_SHOOTER_SPEED);
         intake.firstStageIntake(Intake.Direction.FORWARD);
 
         follower.update();
-        statePathUpdate();
+        follower.update();
+        Scheduler.execute();
 
-        telemetry.addData("pathState", pathState.toString());
+        // Feedback to Driver Hub for debugging
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.addData("Path time", pathTimer.getElapsedTimeSeconds());
-
+        telemetry.update();
     }
 }
