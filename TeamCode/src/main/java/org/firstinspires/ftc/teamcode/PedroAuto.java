@@ -40,7 +40,6 @@ public class PedroAuto extends OpMode {
     LLResult llResult;
     Limelight3A limelight;
     Command shootVolleyAuto = onInterrupt(() -> intake.shootVolley());
-    Command pause = waitMs(500); // waits 500ms
 
 
 
@@ -84,9 +83,8 @@ public class PedroAuto extends OpMode {
         return sequential(
                 follow(follower, scorePreload),
                 follow(follower, grabPickup1, true),
-                pause,
+                shootVolleyAuto,
                 follow(follower, scorePickup1, true),
-                pause,
                 follow(follower, leave, true)
         );
     }
