@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class PedroAuto extends OpMode {
+public class AutonomusFarBlue extends OpMode {
 
     VoltageSensor voltageSensor;
     Drive drive;
@@ -45,18 +45,17 @@ public class PedroAuto extends OpMode {
     Command waitToShooterVolly = waitMs(1000);
     Command waitToShooterSpeedUp = waitMs(2800);
 
+    public double preTargetVelocity;
+    final int CONST_SHOOTER_SPEED = 1600;
 
-    private final Pose startPose = new Pose(20.735202492211844, 120.62694704049845, Math.toRadians(142));
-    private final Pose scorePose = new Pose(48.28582554517134, 92.42367601246106, Math.toRadians(138));
-    private final Pose pickup1Pose = new Pose(22.550988641148997, 75.36238760936001, Math.toRadians(180));
-    private final Pose pickup2Pose = new Pose(18.4, 48.3551401869159, Math.toRadians(180));
-    private final Pose intakeFromGate = new Pose(17, 54.00000000000001, Math.toRadians(165));
-    private final Pose endPose = new Pose(60.64779038520044, 109.44435181204182, Math.toRadians(160));
+    private final Pose startPose = new Pose(83.99143302180688, 6.897975077881609, Math.toRadians(4));
+    private final Pose scorePose = new Pose(79.1, 13.675003727729067, Math.toRadians(65));
+    private final Pose pickup1Pose = new Pose(116.61137071651095, 24.53894080996885, Math.toRadians(0));
+    private final Pose pickup2Pose = new Pose(125.69710243910922, 8.280366334204876, Math.toRadians(0));
+    private final Pose endPose = new Pose(60.64779038520044, 109.44435181204182, Math.toRadians(0));
 
 
     private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3, scorePickup4;
-    public double preTargetVelocity;
-    final int CONST_SHOOTER_SPEED = 1300;
 
 
     public void buildPaths() {
@@ -67,7 +66,7 @@ public class PedroAuto extends OpMode {
 
 
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(52.20189618973337, 74.06865486387001), pickup1Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(76.84462616822435, 22.8), pickup1Pose))
                 .setConstantHeadingInterpolation(pickup1Pose.getHeading())
                 .build();
 
@@ -76,28 +75,15 @@ public class PedroAuto extends OpMode {
                 .setConstantHeadingInterpolation(scorePose.getHeading())
                 .build();
         grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(62.0677383811562, 46.4467589313804), pickup2Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(104.84426773045809, 3.964949522242616), pickup2Pose))
                 .setConstantHeadingInterpolation(pickup2Pose.getHeading())
                 .build();
 
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(pickup2Pose,new Pose(47.68851229921899,59.0369838498961), scorePose))
+                .addPath(new BezierLine(pickup2Pose, scorePose))
                 .setConstantHeadingInterpolation(scorePose.getHeading())
                 .build();
 
-        grabPickup3 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(47.23566315723767, 59.1180433125762), intakeFromGate))
-                .setConstantHeadingInterpolation(intakeFromGate.getHeading())
-                .build();
-
-        scorePickup3 = follower.pathBuilder()
-                .addPath(new BezierLine(intakeFromGate, scorePose))
-                .setConstantHeadingInterpolation(scorePose.getHeading())
-                .build();
-        scorePickup4 = follower.pathBuilder()
-                .addPath(new BezierLine(intakeFromGate, endPose))
-                .setConstantHeadingInterpolation(endPose.getHeading())
-                .build();
 
     }
 
@@ -111,27 +97,7 @@ public class PedroAuto extends OpMode {
                 wait,
                 follow(follower, grabPickup1, true),
                 shortWait,
-                follow(follower, scorePickup1, true),
-                shootVolleyAuto,
-                waitToShooterVolly,
-                follow(follower, grabPickup2, true),
-                shortWait,
-                follow(follower, scorePickup2, true),
-                shootVolleyAuto,
-                waitToShooterVolly,
-                follow(follower, grabPickup3, true),
-                waitToShooterVolly,
-                wait,
-                shortWait,
-                follow(follower, scorePickup3, true),
-                shootVolleyAuto,
-                waitToShooterVolly,
-                follow(follower, grabPickup3, true),
-                wait,
-                shortWait,
-                follow(follower, scorePickup4, true),
-                shootVolleyAuto,
-                waitToShooterVolly
+                follow(follower, scorePickup1, true)
         );
     }
 
