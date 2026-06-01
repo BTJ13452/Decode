@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import static android.os.SystemClock.sleep;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 @Autonomous
+@Disabled
+
 public class
 
 AutonomousFarByDistance3 extends BTJAuto {

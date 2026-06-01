@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto; // make sure this aligns with class location
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -8,6 +9,7 @@ import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -28,7 +30,8 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class PedroAuto extends OpMode {
+
+public class AutonomusRedFar extends OpMode {
 
     VoltageSensor voltageSensor;
     Drive drive;
@@ -39,24 +42,29 @@ public class PedroAuto extends OpMode {
     Limelight3A limelight;
     Command startIntake = infinite(() -> intake.firstStageIntake(Intake.Direction.FORWARD));
     Command shootVolleyAuto = instant(() -> intake.shootVolley());
-    Command wait = waitMs(600);
-    Command shortWait = waitMs(400);
+    Command wait = waitMs(500);
+    Command shortWait = waitMs(50);
 
-    Command waitToShooterVolly = waitMs(1000);
-    Command waitToShooterSpeedUp = waitMs(2800);
+    Command waitToShooterVolly = waitMs(700);
+    Command waitToShooterSpeedUp = waitMs(5200);
 
-
-    private final Pose startPose = new Pose(20.735202492211844, 120.62694704049845, Math.toRadians(142));
-    private final Pose scorePose = new Pose(48.28582554517134, 92.42367601246106, Math.toRadians(138));
-    private final Pose pickup1Pose = new Pose(22.550988641148997, 75.36238760936001, Math.toRadians(180));
-    private final Pose pickup2Pose = new Pose(18.4, 48.3551401869159, Math.toRadians(180));
-    private final Pose intakeFromGate = new Pose(17, 54.00000000000001, Math.toRadians(165));
-    private final Pose endPose = new Pose(60.64779038520044, 109.44435181204182, Math.toRadians(160));
-
-
-    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3, scorePickup3, scorePickup4;
     public double preTargetVelocity;
-    final int CONST_SHOOTER_SPEED = 1300;
+    final int CONST_SHOOTER_SPEED = 1550;
+
+    private final Pose startPose = new Pose(86.41588785046733, 7.9999999999999, Math.toRadians(90));
+    private final Pose scorePose = new Pose(85.9816199376947, 13.26121495327102, Math.toRadians(55));
+    private final Pose pickup1Pose = new Pose(145, 45.982825805423566, Math.toRadians(0));
+    private final Pose pickup2Pose = new Pose(142, 16, Math.toRadians(0));
+    private final Pose pickup3Pose = new Pose(142, 23, Math.toRadians(0));
+    private final Pose pickup3BackPose = new Pose(130, 23, Math.toRadians(0));
+
+    private final Pose wigle1 = new Pose(143, 16, Math.toRadians(10));
+    private final Pose wigle2 = new Pose(143, 16, Math.toRadians(-10));
+
+    private final Pose endPose = new Pose(86.5015541874567, 27.072348836558582, Math.toRadians(90));
+
+
+    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, wigleToIntakeBall1, wigleToIntakeBall2, backGrabPickup3, grabPickup3, scorePickup3, scorePickup4, park;
 
 
     public void buildPaths() {
@@ -67,7 +75,7 @@ public class PedroAuto extends OpMode {
 
 
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(52.20189618973337, 74.06865486387001), pickup1Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(71.05557598958288, 40.16213728597186), pickup1Pose))
                 .setConstantHeadingInterpolation(pickup1Pose.getHeading())
                 .build();
 
@@ -76,28 +84,36 @@ public class PedroAuto extends OpMode {
                 .setConstantHeadingInterpolation(scorePose.getHeading())
                 .build();
         grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(62.0677383811562, 46.4467589313804), pickup2Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(129.3777258566978, 29.313862928348907), pickup2Pose))
                 .setConstantHeadingInterpolation(pickup2Pose.getHeading())
+                .build();
+        wigleToIntakeBall1 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup2Pose, wigle1))
+                .setConstantHeadingInterpolation(wigle1.getHeading())
+                .build();
+        wigleToIntakeBall2 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup2Pose, wigle2))
+                .setConstantHeadingInterpolation(wigle2.getHeading())
                 .build();
 
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(pickup2Pose,new Pose(47.68851229921899,59.0369838498961), scorePose))
+                .addPath(new BezierLine(wigle2, scorePose))
                 .setConstantHeadingInterpolation(scorePose.getHeading())
                 .build();
-
         grabPickup3 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(47.23566315723767, 59.1180433125762), intakeFromGate))
-                .setConstantHeadingInterpolation(intakeFromGate.getHeading())
+                .addPath(new BezierLine(scorePose, pickup3Pose))
+                .setConstantHeadingInterpolation(pickup3Pose.getHeading())
+                .build();
+        backGrabPickup3 = follower.pathBuilder()
+                .addPath(new BezierLine(pickup3Pose, pickup3BackPose))
+                .setConstantHeadingInterpolation(pickup3BackPose.getHeading())
                 .build();
 
-        scorePickup3 = follower.pathBuilder()
-                .addPath(new BezierLine(intakeFromGate, scorePose))
-                .setConstantHeadingInterpolation(scorePose.getHeading())
-                .build();
-        scorePickup4 = follower.pathBuilder()
-                .addPath(new BezierLine(intakeFromGate, endPose))
+        park = follower.pathBuilder()
+                .addPath(new BezierLine(scorePose, endPose))
                 .setConstantHeadingInterpolation(endPose.getHeading())
                 .build();
+
 
     }
 
@@ -108,30 +124,33 @@ public class PedroAuto extends OpMode {
                 waitToShooterSpeedUp,
                 shootVolleyAuto,
                 waitToShooterVolly,
-                wait,
+
                 follow(follower, grabPickup1, true),
                 shortWait,
                 follow(follower, scorePickup1, true),
                 shootVolleyAuto,
                 waitToShooterVolly,
+
                 follow(follower, grabPickup2, true),
+                follow(follower, wigleToIntakeBall1, true),
+                shortWait,
+                follow(follower, wigleToIntakeBall2, true),
                 shortWait,
                 follow(follower, scorePickup2, true),
                 shootVolleyAuto,
                 waitToShooterVolly,
+
                 follow(follower, grabPickup3, true),
-                waitToShooterVolly,
                 wait,
+                follow(follower, backGrabPickup3, true),
                 shortWait,
                 follow(follower, scorePickup3, true),
                 shootVolleyAuto,
                 waitToShooterVolly,
-                follow(follower, grabPickup3, true),
-                wait,
-                shortWait,
-                follow(follower, scorePickup4, true),
-                shootVolleyAuto,
-                waitToShooterVolly
+
+                follow(follower, park, true)
+
+
         );
     }
 
@@ -145,7 +164,6 @@ public class PedroAuto extends OpMode {
         voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
 
-        drive = new Drive(hardwareMap, 0, false);
         intake = new Intake(hardwareMap);
 
         shooter = new Shooter(hardwareMap);
@@ -169,6 +187,7 @@ public class PedroAuto extends OpMode {
 
     public void start() {
         schedule(autoRoutine());
+        startIntake.start();
 
     }
 
@@ -184,7 +203,6 @@ public class PedroAuto extends OpMode {
         // Feedback to Driver Hub for debugging
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.update();
     }
 }

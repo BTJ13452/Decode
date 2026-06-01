@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
@@ -16,6 +17,8 @@ import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @Autonomous
+@Disabled
+
 public class AutonomousBlueCloseByDistance extends BTJAuto {
     @SuppressLint("SuspiciousIndentation")
     public void runPath() {

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Systems.Drive;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 import org.firstinspires.ftc.teamcode.Systems.Shooter;
 @Autonomous
+@Disabled
 
 public class AutonomousRedFarByDistance extends BTJAuto {
     public void runPath() {
