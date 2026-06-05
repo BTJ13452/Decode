@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Systems.Intake;
 
 @TeleOp
-//@Disabled
+@Disabled
 
 
 public class TestIntake extends OpMode {

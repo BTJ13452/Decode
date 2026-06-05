@@ -19,6 +19,8 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 
 @TeleOp
 @Config
+@Disabled
+
 
 public class TestAutoShooter extends OpMode {
 
