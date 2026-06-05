@@ -44,7 +44,7 @@ public class AutonomusRedFar extends OpMode {
     Command wait = waitMs(600);
     Command shortWait = waitMs(50);
     Command pickup1Timeout = waitMs(300);
-    Command pickup2Timeout = waitMs(300);
+    Command pickup2Timeout = waitMs(1200);
     Command wigleTimeout = waitMs(100);
     Command pickup3Timeout = waitMs(5300);
     Command waitToShooterVolly = waitMs(1000);
@@ -55,20 +55,18 @@ public class AutonomusRedFar extends OpMode {
 
     private final Pose startPose = new Pose(86, 8.1, Math.toRadians(90));
     private final Pose scorePose = new Pose(88, 15, Math.toRadians(55));
-    private final Pose score1Pose = new Pose(88, 20, Math.toRadians(70));
-    private final Pose score2Pose = new Pose(88, 15, Math.toRadians(63));
-    private final Pose score3Pose = new Pose(88, 15, Math.toRadians(62));
-    private final Pose pickup1Pose = new Pose(144, 46, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(144, 15, Math.toRadians(0));
-    private final Pose wigle1 = new Pose(144, 16.5, Math.toRadians(20));
-    private final Pose wigle2 = new Pose(144, 16.5, Math.toRadians(-20));
+    private final Pose score1Pose = new Pose(88, 20, Math.toRadians(65));
+    private final Pose score2Pose = new Pose(88, 20, Math.toRadians(61));
+    private final Pose score3Pose = new Pose(88, 20, Math.toRadians(63));
+    private final Pose pickup1Pose = new Pose(145, 46, Math.toRadians(0));
+    private final Pose pickup2Pose = new Pose(144, 15, Math.toRadians(-5));
 
     private final Pose pickup3Pose = new Pose(142, 18, Math.toRadians(0));
     private final Pose pickup3BackPose = new Pose(135, 18, Math.toRadians(0));
 
     private final Pose endPose = new Pose(86.5015541874567, 27.072348836558582, Math.toRadians(90));
 
-    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, GoBackForPickup2, grabPickup3, grabPickup4, wigleToGetBall1, wigleToGetBall2, BackGrabPickup3, scorePickup3, scorePickup4, park;
+    private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, GoBackForPickup2, grabPickup3, grabPickup4, BackGrabPickup3, scorePickup3, scorePickup4, park;
 
     // משתנה עבור נתיב החילוץ הדינמי ל-Score
 
@@ -93,18 +91,10 @@ public class AutonomusRedFar extends OpMode {
                 .setConstantHeadingInterpolation(pickup2Pose.getHeading())
                 .build();
 
-        wigleToGetBall1 = follower.pathBuilder()
-                .addPath(new BezierLine(pickup2Pose, wigle1))
-                .setConstantHeadingInterpolation(wigle1.getHeading())
-                .build();
 
-        wigleToGetBall2 = follower.pathBuilder()
-                .addPath(new BezierLine(wigle1, wigle2))
-                .setConstantHeadingInterpolation(wigle2.getHeading())
-                .build();
 
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierLine(wigle2, score2Pose))
+                .addPath(new BezierLine(pickup2Pose,score2Pose))
                 .setConstantHeadingInterpolation(score2Pose.getHeading())
                 .build();
 
@@ -146,18 +136,15 @@ public class AutonomusRedFar extends OpMode {
 
                 race(
                         follow(follower, grabPickup2, true)
-                        ),
+
+                ),
                 pickup2Timeout,
 
-                race(
-                        follow(follower,wigleToGetBall1, true)
-                        ),
-                wigleTimeout,
 
-                race(
-                        follow(follower,wigleToGetBall2, true)
-                        ),
-                wigleTimeout,
+
+
+
+
 
                 follow(follower, scorePickup2, true),
                 shootVolleyAuto,
