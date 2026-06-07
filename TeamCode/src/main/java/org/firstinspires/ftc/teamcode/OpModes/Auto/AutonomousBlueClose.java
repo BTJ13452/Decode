@@ -109,6 +109,7 @@ public class AutonomousBlueClose extends OpMode {
                 shootVolleyAuto,
                 waitToShooterVolly,
                 wait,
+
                 follow(follower, grabPickup1, true),
                 shortWait,
                 follow(follower, scorePickup1, true),

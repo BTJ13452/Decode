@@ -43,26 +43,25 @@ public class AutonomusRedFar extends OpMode {
     Command shootVolleyAuto = instant(() -> intake.shootVolley());
     Command wait = waitMs(600);
     Command shortWait = waitMs(50);
-    Command pickup1Timeout = waitMs(300);
-    Command pickup2Timeout = waitMs(1200);
-    Command wigleTimeout = waitMs(100);
-    Command pickup3Timeout = waitMs(5300);
+    Command pickup1Timeout = waitMs(3500);
+    Command pickup2Timeout = waitMs(6000);
+    Command pickup3Timeout = waitMs(4000);
     Command waitToShooterVolly = waitMs(1000);
     Command waitToShooterSpeedUp = waitMs(5500);
 
     public double preTargetVelocity;
-    final int CONST_SHOOTER_SPEED = 1550;
+    final int CONST_SHOOTER_SPEED = 1520;
 
     private final Pose startPose = new Pose(86, 8.1, Math.toRadians(90));
-    private final Pose scorePose = new Pose(88, 15, Math.toRadians(55));
+    private final Pose scorePose = new Pose(88, 15, Math.toRadians(53));
     private final Pose score1Pose = new Pose(88, 20, Math.toRadians(65));
     private final Pose score2Pose = new Pose(88, 20, Math.toRadians(61));
-    private final Pose score3Pose = new Pose(88, 20, Math.toRadians(63));
+    private final Pose score3Pose = new Pose(88, 23, Math.toRadians(67));
     private final Pose pickup1Pose = new Pose(145, 46, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(144, 15, Math.toRadians(-5));
+    private final Pose pickup2Pose = new Pose(144, 15, Math.toRadians(-10));
 
-    private final Pose pickup3Pose = new Pose(142, 18, Math.toRadians(0));
-    private final Pose pickup3BackPose = new Pose(135, 18, Math.toRadians(0));
+    private final Pose pickup3Pose = new Pose(144, 18, Math.toRadians(0));
+    private final Pose pickup3BackPose = new Pose(130, 18, Math.toRadians(0));
 
     private final Pose endPose = new Pose(86.5015541874567, 27.072348836558582, Math.toRadians(90));
 
@@ -110,7 +109,7 @@ public class AutonomusRedFar extends OpMode {
 
         scorePickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup3BackPose, scorePose))
-                .setConstantHeadingInterpolation(scorePose.getHeading())
+                .setConstantHeadingInterpolation(score3Pose.getHeading())
                 .build();
 
         park = follower.pathBuilder()
@@ -126,60 +125,58 @@ public class AutonomusRedFar extends OpMode {
                 shootVolleyAuto,
                 waitToShooterVolly,
                 race(
-                        follow(follower, grabPickup1, true)
+                        sequential(
+                                follow(follower, grabPickup1, true)
                         ),
-                pickup1Timeout,
+                        pickup1Timeout
+                ),
 
                 follow(follower, scorePickup1, true),
                 shootVolleyAuto,
                 waitToShooterVolly,
 
                 race(
-                        follow(follower, grabPickup2, true)
-
+                        sequential(
+                                follow(follower, grabPickup2, true)
+                        ),
+                        pickup2Timeout
                 ),
-                pickup2Timeout,
-
-
-
-
 
 
 
                 follow(follower, scorePickup2, true),
                 shootVolleyAuto,
-                waitToShooterVolly
+                waitToShooterVolly,
 
-//                ),
-//                wait,
-//                race(
-//                        sequential(
-//                                follow(follower, grabPickup3, true),
-//                                follow(follower, BackGrabPickup3, true),
-//                                shortWait,
-//                                follow(follower, scorePickup3, true),
-//                                shootVolleyAuto,
-//                                waitToShooterVolly
-//                        ),
-//                        pickup3Timeout
-//                ),
-//                wait,
-//
-//                race(
-//                        sequential(
-//                                follow(follower, grabPickup3, true),
-//                                follow(follower, BackGrabPickup3, true),
-//                                shortWait,
-//                                follow(follower, scorePickup3, true),
-//                                shootVolleyAuto,
-//                                waitToShooterVolly
-//                        ),
-//                        pickup3Timeout
-//                ),
-//                shootVolleyAuto,
-//                waitToShooterVolly,
-//
-//                follow(follower, park, true)
+                race(
+                        sequential(
+                                follow(follower, grabPickup3, true),
+                                follow(follower, BackGrabPickup3, true),
+                                follow(follower, grabPickup3, true),
+
+                                follow(follower, scorePickup3, true),
+                                shootVolleyAuto,
+                                waitToShooterVolly
+                        ),
+                        pickup3Timeout
+                ),
+
+                race(
+                        sequential(
+                                follow(follower, grabPickup3, true),
+                                follow(follower, BackGrabPickup3, true),
+                                follow(follower, grabPickup3, true),
+                                shortWait,
+                                follow(follower, scorePickup3, true),
+                                shootVolleyAuto,
+                                waitToShooterVolly
+                        ),
+                        pickup3Timeout
+                ),
+                shootVolleyAuto,
+                waitToShooterVolly,
+
+                follow(follower, park, true)
         );
     }
 
