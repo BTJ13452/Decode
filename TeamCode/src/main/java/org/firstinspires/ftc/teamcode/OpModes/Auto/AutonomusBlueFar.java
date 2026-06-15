@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import static com.pedropathing.ivy.commands.Commands.branch;
 
 @Autonomous
-public class AutonomusRedFar extends OpMode {
+public class AutonomusBlueFar extends OpMode {
 
     VoltageSensor voltageSensor;
     Drive drive;
@@ -50,24 +50,26 @@ public class AutonomusRedFar extends OpMode {
     Command waitToShooterVolly = waitMs(1000);
     Command waitToShooterSpeedUp = waitMs(5500);
 
+
     public double preTargetVelocity;
     final int CONST_SHOOTER_SPEED = 1520;
 
-    private final Pose startPose = new Pose(86, 8.1, Math.toRadians(90));
-    private final Pose scorePose = new Pose(88, 15, Math.toRadians(53));
-    private final Pose score1Pose = new Pose(88, 20, Math.toRadians(65));
-    private final Pose score2Pose = new Pose(88, 20, Math.toRadians(65));
-    private final Pose score3Pose = new Pose(88, 23, Math.toRadians(63));
-    private final Pose score4Pose = new Pose(88, 23, Math.toRadians(64));
-    private final Pose pickup1Pose = new Pose(145, 46, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(144, 15, Math.toRadians(-5));
+    private final Pose startPose = new Pose(58, 8.1, Math.toRadians(90));
+    private final Pose scorePose = new Pose(56, 12, Math.toRadians(122));
+    private final Pose score1Pose = new Pose(56, 15, Math.toRadians(113));
+    private final Pose score2Pose = new Pose(56, 7, Math.toRadians(114));
+    private final Pose score3Pose = new Pose(56, 10, Math.toRadians(117));
+    private final Pose score4Pose = new Pose(56, 10, Math.toRadians(118));
+    private final Pose pickup1Pose = new Pose(-1, 26, Math.toRadians(180));
+    private final Pose pickup2Pose = new Pose(1.5
+            , 58, Math.toRadians(185));
 
-    private final Pose pickup3Pose = new Pose(144, 16, Math.toRadians(-5));
-    private final Pose pickup3BackPose = new Pose(130, 16, Math.toRadians(-5));
-    private final Pose pickup4Pose = new Pose(144, 16, Math.toRadians(-5));
-    private final Pose pickup4BackPose = new Pose(135, 16, Math.toRadians(-5));
+    private final Pose pickup3Pose = new Pose(0, 16, Math.toRadians(185));
+    private final Pose pickup3BackPose = new Pose(14, 16, Math.toRadians(185));
+    private final Pose pickup4Pose = new Pose(0, 16, Math.toRadians(185));
+    private final Pose pickup4BackPose = new Pose(9, 16, Math.toRadians(185));
 
-    private final Pose endPose = new Pose(86.5015541874567, 27.072348836558582, Math.toRadians(90));
+    private final Pose endPose = new Pose(144-86.5015541874567, 27.072348836558582, Math.toRadians(90));
 
     private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, GoBackForPickup2, grabPickup3, grabPickup4, BackGrabPickup3,BackGrabPickup4, scorePickup3, scorePickup4, park;
 
@@ -80,7 +82,7 @@ public class AutonomusRedFar extends OpMode {
                 .build();
 
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(71.05557598958288, 40.16213728597186), pickup1Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(144-71.05557598958288, 40.16213728597186), pickup1Pose))
                 .setConstantHeadingInterpolation(pickup1Pose.getHeading())
                 .build();
 
@@ -90,7 +92,7 @@ public class AutonomusRedFar extends OpMode {
                 .build();
 
         grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(score1Pose, new Pose(71.05557598958288, 40.16213728597186), pickup2Pose))
+                .addPath(new BezierCurve(score1Pose, new Pose(144- 71.05557598958288, 40.16213728597186), pickup2Pose))
                 .setConstantHeadingInterpolation(pickup2Pose.getHeading())
                 .build();
 
@@ -138,6 +140,7 @@ public class AutonomusRedFar extends OpMode {
 
     public Command autoRoutine() {
         return sequential(
+
                 follow(follower, scorePreload, true),
                 startIntake,
                 waitToShooterSpeedUp,
@@ -147,6 +150,7 @@ public class AutonomusRedFar extends OpMode {
                         sequential(
                                 follow(follower, grabPickup1, true),
                                 startIntake
+
                         ),
                         pickup1Timeout
                 ),
@@ -159,6 +163,7 @@ public class AutonomusRedFar extends OpMode {
                         sequential(
                                 follow(follower, grabPickup2, true),
                                 startIntake
+
 
                         ),
                         pickup2Timeout
@@ -192,6 +197,7 @@ public class AutonomusRedFar extends OpMode {
                         sequential(
                                 follow(follower, grabPickup3, true),
                                 startIntake
+
 
                         ),
                         wait

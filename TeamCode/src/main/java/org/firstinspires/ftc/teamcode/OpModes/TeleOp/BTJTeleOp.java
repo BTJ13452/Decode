@@ -25,6 +25,7 @@ public class BTJTeleOp extends OpMode {
     public double preTargetVelocity;
     boolean seenBasket = false;
     boolean wasRightStickButon = false;
+    boolean isParking = false;
 
 
     VoltageSensor voltageSensor;
@@ -84,22 +85,31 @@ public class BTJTeleOp extends OpMode {
         llResult = limelight.getLatestResult();
         shooter.runByPidf();
 
+        if (isParking == false) {
+            shooter.setVelocity(CONST_SHOOTER_SPEED);
 
-            if (llResult != null) {
-                llResult = limelight.getLatestResult();
-                double ta = llResult.getTa();
-                targetVelocity = (shooter.shooterByDistance(ta));
-                preTargetVelocity = (shooter.getVelocity());
-                shooter.setVelocity(targetVelocity);
-                seenBasket = true;
-                wasRightStickButon = true;
+        } else  {
 
-            }
-            if (llResult.getTa() == 0) {
-                llResult = limelight.getLatestResult();
-                shooter.setVelocity(CONST_SHOOTER_SPEED);
+            shooter.setVelocity(0);
+            intake.firstStageIntake(Intake.Direction.STOP);
+            intake.secondStageTransport(Intake.Direction.STOP);
+            intake.thirdStageTransport(Intake.Direction.STOP);
 
-            }
+        }
+
+
+        if (llResult != null) {
+            llResult = limelight.getLatestResult();
+            double ta = llResult.getTa();
+            targetVelocity = (shooter.shooterByDistance(ta));
+            seenBasket = true;
+            wasRightStickButon = true;
+
+        }
+        if (llResult.getTa() == 0) {
+            llResult = limelight.getLatestResult();
+
+        }
         shooter.runByPidf();
 
         if (gamepad1.xWasPressed()) {
@@ -140,11 +150,12 @@ public class BTJTeleOp extends OpMode {
 
         if (gamepad1.yWasPressed()) {
             if (parking.isRobotRaised()) {
+                isParking = false;
                 parking.lowerRobot();
                 LEDs.blinkBlueWhite();
             } else {
                 parking.raiseRobot();
-                shooter.setPower(0);
+                isParking = true;
                 intake.stop();
 
             }
@@ -155,7 +166,7 @@ public class BTJTeleOp extends OpMode {
         if (gamepad1.aWasPressed()) {
             intake.shootVolleyMid();
         }
-        if (gamepad1.leftStickButtonWasPressed()){
+        if (gamepad1.leftStickButtonWasPressed()) {
             intake.shootVolley();
         }
         if (!parking.isRobotRaised() && !intake.isShootVolleyAlive()) {
@@ -163,11 +174,9 @@ public class BTJTeleOp extends OpMode {
         }
 
 
-
-
         if (intake.validateAreThreeIn(75)) {
             LEDs.setColorGreen();
-        } else if (intake.validateAreBallStuck(75)){
+        } else if (intake.validateAreBallStuck(75)) {
             LEDs.setColorOrange();
         } else if (intake.validateAreNotThreeIn(75)) {
             LEDs.turnOff();
@@ -176,6 +185,7 @@ public class BTJTeleOp extends OpMode {
         printTelemetry();
 
     }
+
     @Override
     public void stop() {
         if (waitForLongXPress.isAlive()) {
@@ -188,7 +198,7 @@ public class BTJTeleOp extends OpMode {
 
     public void printTelemetry() {
         telemetry.addData("target velocity", shooter.getVelocity());
-        telemetry.addData("pre target veocity",preTargetVelocity);
+        telemetry.addData("pre target veocity", preTargetVelocity);
         if (llResult != null) {
             telemetry.addData("ta", llResult.getTa());
         }

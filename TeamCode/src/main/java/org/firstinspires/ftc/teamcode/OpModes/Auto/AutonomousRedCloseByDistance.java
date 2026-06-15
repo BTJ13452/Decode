@@ -44,6 +44,8 @@ public class AutonomousRedCloseByDistance extends BTJAuto {
 
         shooter.setVelocity(1300);
 
+        shooter.setVelocity(125.19003115264798);
+        shooter.setVelocity(125.19003115264798);
         //rotate to first intake
         pinpoint.resetPosAndIMU();
         drive.drive(0, 0, 0.2);

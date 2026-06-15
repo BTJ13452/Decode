@@ -28,7 +28,8 @@ import org.firstinspires.ftc.teamcode.Systems.Shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous
-public class AutonomousBlueClose extends OpMode {
+public class AutonomousRedClose extends OpMode {
+
 
     VoltageSensor voltageSensor;
     Drive drive;
@@ -42,20 +43,24 @@ public class AutonomousBlueClose extends OpMode {
     Command wait = waitMs(300);
     Command shortWait = waitMs(200);
 
-    Command waitToShooterVolly = waitMs(1000);
+    Command waitToShooterVolly = waitMs(2000);
     Command waitToShooterSpeedUp = waitMs(2800);
 
 
-    private final Pose startPose = new Pose(20.735202492211844, 120.62694704049845, Math.toRadians(142));
-    private final Pose scorePose = new Pose(49, 92.42367601246106, Math.toRadians(140));
-    private final Pose scorePose1 = new Pose(49, 92.42367601246106, Math.toRadians(138));
-    private final Pose scorePose2 = new Pose(49, 92.42367601246106, Math.toRadians(138));
-    private final Pose scorePose3 = new Pose(49, 92.42367601246106, Math.toRadians(138));
-    private final Pose pickup1Pose = new Pose(22, 75.36238760936001, Math.toRadians(180));
-    private final Pose pickup2Pose = new Pose(18, 48.3551401869159, Math.toRadians(180));
-    private final Pose openGate = new Pose(16, 53, Math.toRadians(180));
-    private final Pose intakeFromGate = new Pose(13, 40, Math.toRadians(100));
-    private final Pose endPose = new Pose(60.64779038520044, 109.44435181204182, Math.toRadians(160));
+    private final Pose startPose = new Pose(144-20.735202492211844, 120.62694704049845, Math.toRadians(180-142));
+    private final Pose scorePose = new Pose(144-49, 95.8
+            , Math.toRadians(180-140));
+    private final Pose scorePose1 = new Pose(144-49+1.5, 92.42367601246106, Math.toRadians(180-138));
+    private final Pose scorePose2 = new Pose(144-49, 92.42367601246106, Math.toRadians(180-138));
+    private final Pose scorePose3 = new Pose(144-49, 92.42367601246106, Math.toRadians(180-138));
+    private final Pose pickup1Pose = new Pose(144-22+12, 76.5
+            , Math.toRadians(180-180));
+    private final Pose pickup2Pose = new Pose(144-18+13.5, 48.3551401869159+3 , Math.toRadians(180-180));
+    private final Pose openGate = new Pose(144-16+5, 57.5
+
+            , Math.toRadians(180-180+25));
+    private final Pose intakeFromGate = new Pose(144-13, 40, Math.toRadians(180-100));
+    private final Pose endPose = new Pose(144-60.64779038520044+5, 109.44435181204182, Math.toRadians(180-160));
 
 
     private PathChain scorePreload, grabPickup1, scorePickup1, grabPickup2, scorePickup2, grabPickup3FromGate,grabPickup3, scorePickup3, scorePickup4;
@@ -71,7 +76,7 @@ public class AutonomousBlueClose extends OpMode {
 
 
         grabPickup1 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose, new Pose(52.20189618973337, 74.06865486387001), pickup1Pose))
+                .addPath(new BezierCurve(scorePose, new Pose(144-52.20189618973337, 74.06865486387001), pickup1Pose))
                 .setConstantHeadingInterpolation(pickup1Pose.getHeading())
                 .build();
 
@@ -80,17 +85,17 @@ public class AutonomousBlueClose extends OpMode {
                 .setConstantHeadingInterpolation(scorePose1.getHeading())
                 .build();
         grabPickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose1, new Pose(62.0677383811562, 46.4467589313804), pickup2Pose))
+                .addPath(new BezierCurve(scorePose1, new Pose(144-62.0677383811562, 46.4467589313804), pickup2Pose))
                 .setConstantHeadingInterpolation(pickup2Pose.getHeading())
                 .build();
 
         scorePickup2 = follower.pathBuilder()
-                .addPath(new BezierCurve(pickup2Pose,new Pose(47.68851229921899,59.0369838498961), scorePose))
+                .addPath(new BezierCurve(pickup2Pose,new Pose(144-47.68851229921899,59.0369838498961), scorePose))
                 .setConstantHeadingInterpolation(scorePose2.getHeading())
                 .build();
 
         grabPickup3FromGate = follower.pathBuilder()
-                .addPath(new BezierCurve(scorePose2, new Pose(47.23566315723767, 59.1180433125762), openGate))
+                .addPath(new BezierCurve(scorePose2, new Pose(144-47.23566315723767, 59.1180433125762), openGate))
                 .setConstantHeadingInterpolation(openGate.getHeading())
                 .build();
         grabPickup3 = follower.pathBuilder()
